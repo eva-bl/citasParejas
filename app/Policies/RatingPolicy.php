@@ -1,0 +1,47 @@
+<?php
+
+namespace App\Policies;
+
+use App\Models\Plan;
+use App\Models\Rating;
+use App\Models\User;
+
+class RatingPolicy
+{
+    /**
+     * Determine if the user can create a rating
+     */
+    public function create(User $user, Plan $plan): bool
+    {
+        // User must have a couple and plan must belong to that couple
+        return $user->hasCouple() && $user->couple_id === $plan->couple_id;
+    }
+
+    /**
+     * Determine if the user can update the rating
+     */
+    public function update(User $user, Rating $rating): bool
+    {
+        // User can only update their own rating
+        return $rating->user_id === $user->id;
+    }
+
+    /**
+     * Determine if the user can delete the rating
+     */
+    public function delete(User $user, Rating $rating): bool
+    {
+        // User can only delete their own rating
+        return $rating->user_id === $user->id;
+    }
+
+    /**
+     * Determine if the user can view ratings for a plan
+     */
+    public function viewAny(User $user, Plan $plan): bool
+    {
+        // User must have a couple and plan must belong to that couple
+        return $user->hasCouple() && $user->couple_id === $plan->couple_id;
+    }
+}
+

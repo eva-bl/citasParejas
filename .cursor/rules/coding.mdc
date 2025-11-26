@@ -1,0 +1,17 @@
+---
+alwaysApply: true
+---
+
+# Coding Pattern Preferences
+
+- Always prefer simple, explicit and maintainable solutions over "clever" code.
+- Avoid duplication of logic. Before implementing something new, search the codebase for existing patterns or reusable components/services/actions.
+- Code must be environment-aware (dev, test, prod) and avoid assumptions that may break in other environments.
+- Only make changes related to the requested scope, unless a closely related refactor clearly improves maintainability without risk.
+- When fixing a bug, favor consistency with existing patterns and technologies. Do not introduce new stacks or approaches unless clearly justified, and ensure old logic is removed if replaced.
+- Keep the codebase organized, modular and clean. Group responsibilities logically (e.g., Services, Actions, DTOs, Filament Resources, Policies).
+- Avoid writing ad-hoc scripts directly into runtime code. One-off scripts must go into dedicated locations (e.g., /scripts or isolated artisan commands).
+- Refactor files that exceed ~200-300 lines or that contain multiple responsibilities (e.g., split controllers, Filament Pages, Livewire components).
+- Mocked data is only acceptable in testing contexts. Never introduce mock/fake/stub data for dev or prod logic.
+- Never overwrite .env values or environment configurations without explicit user confirmation.
+- All code should be testable, preferably with Pest. When possible, design logic in isolated services or actions to enable easier testing.

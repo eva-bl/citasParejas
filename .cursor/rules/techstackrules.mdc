@@ -1,0 +1,14 @@
+---
+alwaysApply: true
+---
+
+# Tech Stack Rules
+
+- The backend must always be built using Laravel (PHP).
+- Filament is the primary UI/admin framework for all internal dashboards, panels, and admin-facing interfaces.
+- MySQL is the only database engine allowed for persistence.
+- The frontend (outside of Filament) must be built using Blade templates with Livewire and Alpine.js for interactivity.
+- TailwindCSS is the only styling system allowed (no custom CSS frameworks unless explicitly approved).
+- Vite is the required build tool for all frontend assets (development uses npm run dev, production uses npm run build).
+- No external frontend frameworks such as React or Vue may be introduced unless explicitly approved.
+- No alternative backend runtimes (such as Node.js, Python, or Go) may be introduced.
