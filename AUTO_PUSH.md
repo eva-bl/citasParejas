@@ -2,9 +2,15 @@
 
 Este proyecto está configurado para hacer commit y push automático de cambios a GitHub.
 
+## ✅ Configuración Automática
+
+**¡Auto-push está ACTIVADO!** 
+
+Después de cada commit, los cambios se suben automáticamente a GitHub mediante un hook de git (`.git-hooks/post-commit`).
+
 ## 📋 Scripts Disponibles
 
-### PowerShell (Windows)
+### PowerShell (Windows) - Para uso manual
 ```powershell
 .\.git-auto-push.ps1 "Mensaje del commit"
 ```
@@ -16,7 +22,12 @@ Este proyecto está configurado para hacer commit y push automático de cambios 
 
 ## 🤖 Uso Automático
 
-El asistente ejecutará automáticamente el script después de cambios importantes. Los commits incluirán mensajes descriptivos del trabajo realizado.
+El asistente ejecutará automáticamente:
+1. `git add -A` - Agregar todos los cambios
+2. `git commit -m "mensaje descriptivo"` - Commit con mensaje descriptivo
+3. `git push origin main` - Push automático (vía hook)
+
+Los commits incluirán mensajes descriptivos del trabajo realizado (ej: "Sprint 5: Sistema de Fotos completo").
 
 ## ⚙️ Configuración Manual
 
