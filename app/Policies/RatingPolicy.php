@@ -36,12 +36,12 @@ class RatingPolicy
     }
 
     /**
-     * Determine if the user can view ratings for a plan
+     * Determine if the user can view any ratings
      */
-    public function viewAny(User $user, Plan $plan): bool
+    public function viewAny(User $user): bool
     {
-        // User must have a couple and plan must belong to that couple
-        return $user->hasCouple() && $user->couple_id === $plan->couple_id;
+        // En el contexto de admin, todos los admins pueden ver todas las valoraciones
+        return $user->isAdmin();
     }
 }
 
