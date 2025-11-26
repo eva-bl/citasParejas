@@ -3,43 +3,103 @@
     <head>
         @include('partials.head')
     </head>
-    <body class="min-h-screen bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50">
-        <!-- Desktop Sidebar - Solo visible en pantallas grandes -->
-        <aside class="hidden lg:flex fixed left-0 top-0 bottom-0 flex-col w-64 border-r border-pink-200/50 bg-gradient-to-b from-white via-pink-50/30 to-purple-50/30 backdrop-blur-sm shadow-lg z-30">
+    <body class="min-h-screen bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50"
+          x-data="{ 
+              sidebarCollapsed: localStorage.getItem('sidebarCollapsed') === 'true',
+              toggleSidebar() {
+                  this.sidebarCollapsed = !this.sidebarCollapsed;
+                  localStorage.setItem('sidebarCollapsed', this.sidebarCollapsed);
+              }
+          }">
+        <!-- Desktop Sidebar - Colapsable -->
+        <aside :class="sidebarCollapsed ? 'w-20' : 'w-64'"
+               class="hidden lg:flex fixed left-0 top-0 bottom-0 flex-col border-r border-pink-200/50 bg-gradient-to-b from-white via-pink-50/30 to-purple-50/30 backdrop-blur-sm shadow-lg z-30 transition-all duration-300">
             <div class="flex flex-col h-full p-4">
-                <!-- Logo -->
-                <a href="{{ route('dashboard') }}" class="flex items-center space-x-2 mb-6 p-3 rounded-xl hover:bg-white/50 transition-all" wire:navigate>
-                    <div class="w-10 h-10 bg-gradient-to-br from-pink-500 to-purple-600 rounded-lg flex items-center justify-center shadow-lg">
-                        <span class="text-white text-xl font-bold">💑</span>
-                    </div>
-                    <span class="text-xl font-bold bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent">Citas</span>
-                </a>
+                <!-- Logo and Toggle -->
+                <div class="flex items-center justify-between mb-6">
+                    <a href="{{ route('dashboard') }}" 
+                       :class="sidebarCollapsed ? 'justify-center' : 'space-x-2'"
+                       class="flex items-center p-3 rounded-xl hover:bg-white/50 transition-all group" 
+                       wire:navigate>
+                        <div class="w-10 h-10 bg-gradient-to-br from-pink-500 to-purple-600 rounded-lg flex items-center justify-center shadow-lg flex-shrink-0">
+                            <span class="text-white text-xl font-bold">💑</span>
+                        </div>
+                        <span x-show="!sidebarCollapsed" 
+                              x-transition:enter="transition ease-out duration-200"
+                              x-transition:enter-start="opacity-0"
+                              x-transition:enter-end="opacity-100"
+                              x-transition:leave="transition ease-in duration-200"
+                              x-transition:leave-start="opacity-100"
+                              x-transition:leave-end="opacity-0"
+                              class="text-xl font-bold bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent">Citas</span>
+                    </a>
+                    <button @click="toggleSidebar()" 
+                            class="p-2 rounded-lg hover:bg-white/50 transition-all text-neutral-600 hover:text-pink-600 flex-shrink-0"
+                            :title="sidebarCollapsed ? 'Expandir sidebar' : 'Colapsar sidebar'">
+                        <svg x-show="!sidebarCollapsed" 
+                             x-transition
+                             class="w-5 h-5" 
+                             fill="none" 
+                             stroke="currentColor" 
+                             viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 19l-7-7 7-7m8 14l-7-7 7-7" />
+                        </svg>
+                        <svg x-show="sidebarCollapsed" 
+                             x-transition
+                             class="w-5 h-5" 
+                             fill="none" 
+                             stroke="currentColor" 
+                             viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5l7 7-7 7M5 5l7 7-7 7" />
+                        </svg>
+                    </button>
+                </div>
 
                 <!-- Navigation -->
                 <nav class="flex-1 space-y-2">
                     <div class="space-y-2">
-                        <div class="text-xs font-semibold text-neutral-500 uppercase tracking-wider px-3 mb-2">
+                        <div x-show="!sidebarCollapsed" 
+                             x-transition
+                             class="text-xs font-semibold text-neutral-500 uppercase tracking-wider px-3 mb-2">
                             {{ __('Navegación') }}
                         </div>
                         
                         <a href="{{ route('dashboard') }}" 
-                           class="flex items-center gap-3 px-3 py-2 rounded-xl hover:bg-gradient-to-r hover:from-pink-500/10 hover:to-purple-500/10 transition-all group {{ request()->routeIs('dashboard') ? 'bg-gradient-to-r from-pink-500/10 to-purple-500/10 text-pink-600' : 'text-neutral-700' }}"
-                           wire:navigate>
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                           :class="sidebarCollapsed ? 'justify-center px-3' : 'gap-3 px-3'"
+                           class="flex items-center py-2 rounded-xl hover:bg-gradient-to-r hover:from-pink-500/10 hover:to-purple-500/10 transition-all group {{ request()->routeIs('dashboard') ? 'bg-gradient-to-r from-pink-500/10 to-purple-500/10 text-pink-600' : 'text-neutral-700' }}"
+                           wire:navigate
+                           :title="sidebarCollapsed ? 'Dashboard' : ''">
+                            <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
                             </svg>
-                            <span class="font-medium">{{ __('Dashboard') }}</span>
+                            <span x-show="!sidebarCollapsed" 
+                                  x-transition:enter="transition ease-out duration-200"
+                                  x-transition:enter-start="opacity-0"
+                                  x-transition:enter-end="opacity-100"
+                                  x-transition:leave="transition ease-in duration-200"
+                                  x-transition:leave-start="opacity-100"
+                                  x-transition:leave-end="opacity-0"
+                                  class="font-medium">{{ __('Dashboard') }}</span>
                         </a>
                         
                         @auth
                             @if(auth()->user()->hasCouple())
                                 <a href="{{ route('plans.index') }}" 
-                                   class="flex items-center gap-3 px-3 py-2 rounded-xl hover:bg-gradient-to-r hover:from-pink-500/10 hover:to-purple-500/10 transition-all group {{ request()->routeIs('plans.*') ? 'bg-gradient-to-r from-pink-500/10 to-purple-500/10 text-pink-600' : 'text-neutral-700' }}"
-                                   wire:navigate>
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                   :class="sidebarCollapsed ? 'justify-center px-3' : 'gap-3 px-3'"
+                                   class="flex items-center py-2 rounded-xl hover:bg-gradient-to-r hover:from-pink-500/10 hover:to-purple-500/10 transition-all group {{ request()->routeIs('plans.*') ? 'bg-gradient-to-r from-pink-500/10 to-purple-500/10 text-pink-600' : 'text-neutral-700' }}"
+                                   wire:navigate
+                                   :title="sidebarCollapsed ? 'Mis Planes' : ''">
+                                    <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                                     </svg>
-                                    <span class="font-medium">{{ __('Mis Planes') }}</span>
+                                    <span x-show="!sidebarCollapsed" 
+                                          x-transition:enter="transition ease-out duration-200"
+                                          x-transition:enter-start="opacity-0"
+                                          x-transition:enter-end="opacity-100"
+                                          x-transition:leave="transition ease-in duration-200"
+                                          x-transition:leave-start="opacity-100"
+                                          x-transition:leave-end="opacity-0"
+                                          class="font-medium">{{ __('Mis Planes') }}</span>
                                 </a>
                             @endif
                         @endauth
@@ -48,20 +108,38 @@
                     <div class="pt-4 mt-4 border-t border-pink-200/50 space-y-2">
                         <a href="https://github.com/laravel/livewire-starter-kit" 
                            target="_blank"
-                           class="flex items-center gap-3 px-3 py-2 rounded-xl hover:bg-gradient-to-r hover:from-purple-500/10 hover:to-blue-500/10 transition-all group text-neutral-700">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                           :class="sidebarCollapsed ? 'justify-center px-3' : 'gap-3 px-3'"
+                           class="flex items-center py-2 rounded-xl hover:bg-gradient-to-r hover:from-purple-500/10 hover:to-blue-500/10 transition-all group text-neutral-700"
+                           :title="sidebarCollapsed ? 'Repository' : ''">
+                            <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />
                             </svg>
-                            <span class="font-medium">{{ __('Repository') }}</span>
+                            <span x-show="!sidebarCollapsed" 
+                                  x-transition:enter="transition ease-out duration-200"
+                                  x-transition:enter-start="opacity-0"
+                                  x-transition:enter-end="opacity-100"
+                                  x-transition:leave="transition ease-in duration-200"
+                                  x-transition:leave-start="opacity-100"
+                                  x-transition:leave-end="opacity-0"
+                                  class="font-medium">{{ __('Repository') }}</span>
                         </a>
                         
                         <a href="https://laravel.com/docs/starter-kits#livewire" 
                            target="_blank"
-                           class="flex items-center gap-3 px-3 py-2 rounded-xl hover:bg-gradient-to-r hover:from-purple-500/10 hover:to-blue-500/10 transition-all group text-neutral-700">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                           :class="sidebarCollapsed ? 'justify-center px-3' : 'gap-3 px-3'"
+                           class="flex items-center py-2 rounded-xl hover:bg-gradient-to-r hover:from-purple-500/10 hover:to-blue-500/10 transition-all group text-neutral-700"
+                           :title="sidebarCollapsed ? 'Documentation' : ''">
+                            <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
                             </svg>
-                            <span class="font-medium">{{ __('Documentation') }}</span>
+                            <span x-show="!sidebarCollapsed" 
+                                  x-transition:enter="transition ease-out duration-200"
+                                  x-transition:enter-start="opacity-0"
+                                  x-transition:enter-end="opacity-100"
+                                  x-transition:leave="transition ease-in duration-200"
+                                  x-transition:leave-start="opacity-100"
+                                  x-transition:leave-end="opacity-0"
+                                  class="font-medium">{{ __('Documentation') }}</span>
                         </a>
                     </div>
                 </nav>
@@ -69,22 +147,31 @@
                 <!-- User Menu -->
                 <div class="pt-4 border-t border-pink-200/50">
                     <div x-data="{ open: false }" class="relative">
-                        <button @click="open = !open" class="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-white/50 transition-all group">
+                        <button @click="open = !open" 
+                                :class="sidebarCollapsed ? 'justify-center' : 'gap-3'"
+                                class="w-full flex items-center p-3 rounded-xl hover:bg-white/50 transition-all group">
                             <span class="relative flex h-10 w-10 shrink-0 overflow-hidden rounded-xl shadow-md">
                                 <span class="flex h-full w-full items-center justify-center bg-gradient-to-br from-pink-500 to-purple-600 text-white font-semibold">
                                     {{ auth()->user()->initials() }}
                                 </span>
                             </span>
-                            <div class="grid flex-1 text-start text-sm leading-tight min-w-0">
+                            <div x-show="!sidebarCollapsed" 
+                                 x-transition
+                                 class="grid flex-1 text-start text-sm leading-tight min-w-0">
                                 <span class="truncate font-semibold text-neutral-900 group-hover:text-pink-600 transition-colors">{{ auth()->user()->name }}</span>
                                 <span class="truncate text-xs text-neutral-600">{{ auth()->user()->email }}</span>
                             </div>
-                            <svg class="w-5 h-5 text-neutral-400 group-hover:text-pink-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg x-show="!sidebarCollapsed" 
+                                 x-transition
+                                 class="w-5 h-5 text-neutral-400 group-hover:text-pink-600 transition-colors flex-shrink-0" 
+                                 fill="none" 
+                                 stroke="currentColor" 
+                                 viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                             </svg>
                         </button>
 
-                        <div x-show="open" 
+                        <div x-show="open && !sidebarCollapsed" 
                              @click.away="open = false"
                              x-transition
                              class="absolute bottom-full left-0 mb-2 w-64 bg-white/95 backdrop-blur-md border border-pink-200/50 shadow-xl rounded-xl overflow-hidden z-50">
@@ -127,7 +214,7 @@
             </div>
         </aside>
 
-        <!-- Mobile Sidebar - Solo visible en pantallas pequeñas -->
+        <!-- Mobile Sidebar - Ya es desplegable -->
         <div x-data="{ open: false }" class="lg:hidden">
             <!-- Mobile Header -->
             <header class="bg-white/80 backdrop-blur-md border-b border-pink-200/50 shadow-sm sticky top-0 z-40">
@@ -211,8 +298,9 @@
             </aside>
         </div>
 
-        <!-- Main Content -->
-        <div class="lg:ml-64">
+        <!-- Main Content - Se ajusta dinámicamente al ancho del sidebar -->
+        <div :class="sidebarCollapsed ? 'lg:ml-20' : 'lg:ml-64'" 
+             class="transition-all duration-300">
             <main class="min-h-screen">
                 <div class="container mx-auto px-4 py-6 pt-16 lg:pt-6">
                     {{ $slot }}
