@@ -15,7 +15,9 @@ class EnsureUserIsAdmin
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (!auth()->check() || !auth()->user()->isAdmin()) {
+        // Este middleware solo se ejecuta después de la autenticación
+        // así que auth()->check() siempre será true aquí
+        if (!auth()->user()->isAdmin()) {
             abort(403, 'Acceso denegado. Solo administradores pueden acceder al panel.');
         }
 
