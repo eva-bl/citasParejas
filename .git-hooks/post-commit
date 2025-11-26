@@ -1,0 +1,7 @@
+#!/bin/sh
+# Auto-push después de commit
+# Este hook se ejecuta automáticamente después de cada commit
+
+echo "🚀 Auto-pushing to GitHub..."
+git push origin main
+
