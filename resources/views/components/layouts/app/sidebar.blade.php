@@ -13,7 +13,7 @@
           }">
         <!-- Desktop Sidebar - Colapsable -->
         <aside :class="sidebarCollapsed ? 'w-20' : 'w-64'"
-               class="hidden lg:flex fixed left-0 top-0 bottom-0 flex-col border-r border-pink-200/50 bg-gradient-to-b from-white via-pink-50/30 to-purple-50/30 backdrop-blur-sm shadow-lg z-30 transition-all duration-300">
+               class="hidden lg:flex fixed left-0 top-0 bottom-0 flex-col border-r border-pink-200/50 bg-white shadow-lg z-30 transition-all duration-300">
             <div class="flex flex-col h-full p-4">
                 <!-- Logo and Toggle -->
                 <div class="flex items-center justify-between mb-6">
@@ -255,7 +255,7 @@
                    x-transition:leave="transition ease-in duration-300 transform"
                    x-transition:leave-start="translate-x-0"
                    x-transition:leave-end="-translate-x-full"
-                   class="fixed inset-y-0 left-0 z-50 w-64 bg-gradient-to-b from-white via-pink-50/30 to-purple-50/30 backdrop-blur-sm shadow-xl border-r border-pink-200/50">
+                   class="fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-xl border-r border-pink-200/50">
                 <div class="flex flex-col h-full p-4">
                     <div class="flex items-center justify-between mb-6">
                         <a href="{{ route('dashboard') }}" class="flex items-center space-x-2" wire:navigate>
