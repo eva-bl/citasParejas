@@ -1,7 +1,11 @@
 #!/bin/sh
 # Auto-push después de commit
 # Este hook se ejecuta automáticamente después de cada commit
+# Configurado para usar UTF-8
+
+export LANG=en_US.UTF-8
+export LC_ALL=en_US.UTF-8
 
 echo "🚀 Auto-pushing to GitHub..."
-git push origin main
+git -c core.quotepath=false -c i18n.commitencoding=utf-8 -c i18n.logoutputencoding=utf-8 push origin main
 
