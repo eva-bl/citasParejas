@@ -20,7 +20,13 @@ class RatingResource extends Resource
 {
     protected static ?string $model = Rating::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedStar;
+    
+    protected static ?string $navigationLabel = 'Valoraciones';
+    
+    protected static ?string $modelLabel = 'Valoración';
+    
+    protected static ?string $pluralModelLabel = 'Valoraciones';
 
     public static function form(Schema $schema): Schema
     {

@@ -18,64 +18,73 @@ class PlansTable
     {
         return $table
             ->columns([
-                TextColumn::make('couple.id')
-                    ->searchable(),
                 TextColumn::make('title')
-                    ->searchable(),
+                    ->label('Título')
+                    ->searchable()
+                    ->sortable(),
                 TextColumn::make('date')
-                    ->date()
+                    ->label('Fecha')
+                    ->date('d/m/Y')
                     ->sortable(),
                 TextColumn::make('category.name')
-                    ->searchable(),
-                TextColumn::make('location')
-                    ->searchable(),
-                TextColumn::make('cost')
-                    ->money()
+                    ->label('Categoría')
+                    ->searchable()
+                    ->sortable()
+                    ->badge(),
+                TextColumn::make('couple.join_code')
+                    ->label('Pareja')
+                    ->searchable()
                     ->sortable(),
-                TextColumn::make('created_by')
-                    ->numeric()
+                TextColumn::make('createdBy.name')
+                    ->label('Creado por')
+                    ->searchable()
                     ->sortable(),
                 TextColumn::make('status')
-                    ->searchable(),
+                    ->label('Estado')
+                    ->badge()
+                    ->color(fn (string $state): string => match ($state) {
+                        'pending' => 'warning',
+                        'completed' => 'success',
+                        'cancelled' => 'danger',
+                        default => 'gray',
+                    }),
                 TextColumn::make('overall_avg')
-                    ->numeric()
-                    ->sortable(),
-                TextColumn::make('fun_avg')
-                    ->numeric()
-                    ->sortable(),
-                TextColumn::make('emotional_connection_avg')
-                    ->numeric()
-                    ->sortable(),
-                TextColumn::make('organization_avg')
-                    ->numeric()
-                    ->sortable(),
-                TextColumn::make('value_for_money_avg')
-                    ->numeric()
-                    ->sortable(),
+                    ->label('Valoración Media')
+                    ->numeric(decimalPlaces: 1)
+                    ->sortable()
+                    ->badge()
+                    ->color(fn ($state) => $state >= 4 ? 'success' : ($state >= 3 ? 'warning' : 'danger')),
                 TextColumn::make('ratings_count')
-                    ->numeric()
+                    ->label('Valoraciones')
+                    ->counts('ratings')
                     ->sortable(),
                 TextColumn::make('photos_count')
-                    ->numeric()
+                    ->label('Fotos')
+                    ->counts('photos')
                     ->sortable(),
-                TextColumn::make('last_rated_at')
-                    ->dateTime()
-                    ->sortable(),
+                TextColumn::make('cost')
+                    ->label('Costo')
+                    ->money('EUR')
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('created_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('updated_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('deleted_at')
+                    ->label('Creado')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
                 TrashedFilter::make(),
+                \Filament\Tables\Filters\SelectFilter::make('status')
+                    ->label('Estado')
+                    ->options([
+                        'pending' => 'Pendiente',
+                        'completed' => 'Completado',
+                        'cancelled' => 'Cancelado',
+                    ]),
+                \Filament\Tables\Filters\SelectFilter::make('category_id')
+                    ->label('Categoría')
+                    ->relationship('category', 'name'),
             ])
             ->recordActions([
                 ViewAction::make(),

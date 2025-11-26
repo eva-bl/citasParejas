@@ -16,12 +16,26 @@ class CouplesTable
         return $table
             ->columns([
                 TextColumn::make('join_code')
-                    ->searchable(),
-                TextColumn::make('created_at')
-                    ->dateTime()
+                    ->label('Código de Unión')
+                    ->searchable()
                     ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->copyable()
+                    ->copyMessage('Código copiado')
+                    ->copyMessageDuration(1500),
+                TextColumn::make('users.name')
+                    ->label('Usuarios')
+                    ->badge()
+                    ->separator(','),
+                TextColumn::make('users_count')
+                    ->label('Número de Usuarios')
+                    ->counts('users')
+                    ->sortable(),
+                TextColumn::make('created_at')
+                    ->label('Creado')
+                    ->dateTime()
+                    ->sortable(),
                 TextColumn::make('updated_at')
+                    ->label('Actualizado')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),

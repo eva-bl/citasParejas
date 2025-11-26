@@ -20,7 +20,13 @@ class BadgeResource extends Resource
 {
     protected static ?string $model = Badge::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedTrophy;
+    
+    protected static ?string $navigationLabel = 'Insignias';
+    
+    protected static ?string $modelLabel = 'Insignia';
+    
+    protected static ?string $pluralModelLabel = 'Insignias';
 
     public static function form(Schema $schema): Schema
     {

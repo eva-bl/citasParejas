@@ -20,7 +20,13 @@ class CoupleResource extends Resource
 {
     protected static ?string $model = Couple::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedHeart;
+    
+    protected static ?string $navigationLabel = 'Parejas';
+    
+    protected static ?string $modelLabel = 'Pareja';
+    
+    protected static ?string $pluralModelLabel = 'Parejas';
 
     public static function form(Schema $schema): Schema
     {

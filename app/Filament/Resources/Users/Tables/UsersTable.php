@@ -17,33 +17,38 @@ class UsersTable
         return $table
             ->columns([
                 TextColumn::make('name')
-                    ->searchable(),
+                    ->label('Nombre')
+                    ->searchable()
+                    ->sortable(),
                 TextColumn::make('email')
-                    ->label('Email address')
-                    ->searchable(),
-                TextColumn::make('email_verified_at')
-                    ->dateTime()
+                    ->label('Email')
+                    ->searchable()
                     ->sortable(),
-                TextColumn::make('created_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('updated_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('two_factor_confirmed_at')
-                    ->dateTime()
+                TextColumn::make('couple.join_code')
+                    ->label('Código Pareja')
+                    ->searchable()
                     ->sortable(),
-                TextColumn::make('couple.id')
-                    ->searchable(),
-                TextColumn::make('avatar_path')
-                    ->searchable(),
                 IconColumn::make('is_admin')
-                    ->boolean(),
+                    ->label('Admin')
+                    ->boolean()
+                    ->sortable(),
+                TextColumn::make('email_verified_at')
+                    ->label('Email Verificado')
+                    ->dateTime()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('created_at')
+                    ->label('Creado')
+                    ->dateTime()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
+                \Filament\Tables\Filters\TernaryFilter::make('is_admin')
+                    ->label('Administrador')
+                    ->placeholder('Todos')
+                    ->trueLabel('Solo admins')
+                    ->falseLabel('Solo usuarios'),
             ])
             ->recordActions([
                 ViewAction::make(),
