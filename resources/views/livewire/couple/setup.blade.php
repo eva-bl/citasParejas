@@ -55,12 +55,12 @@ new class extends Component
                         
                         <a href="{{ route('couple.create') }}" 
                            wire:navigate
-                           class="group relative w-48 h-48 rounded-full bg-white shadow-2xl hover:shadow-3xl transition-all duration-300 transform hover:scale-110 hover:-translate-y-2 flex items-center justify-center cursor-pointer mb-6 overflow-hidden"
+                           class="group relative w-48 h-48 rounded-full bg-white shadow-2xl hover:shadow-3xl transition-all duration-300 transform hover:scale-110 hover:-translate-y-2 flex items-center justify-center cursor-pointer mb-6"
                            x-data="{ hover: false }"
                            @mouseenter="hover = true"
                            @mouseleave="hover = false">
-                            <!-- Icono con degradado transparente -->
-                            <div class="w-32 h-32 flex items-center justify-center relative">
+                            <!-- Icono con degradado -->
+                            <div class="w-32 h-32 flex items-center justify-center relative z-10">
                                 <svg class="w-32 h-32" 
                                      viewBox="0 0 24 24"
                                      fill="none">
@@ -96,12 +96,12 @@ new class extends Component
                         
                         <a href="{{ route('couple.join') }}" 
                            wire:navigate
-                           class="group relative w-48 h-48 rounded-full bg-white shadow-2xl hover:shadow-3xl transition-all duration-300 transform hover:scale-110 hover:-translate-y-2 flex items-center justify-center cursor-pointer mb-6 overflow-hidden"
+                           class="group relative w-48 h-48 rounded-full bg-white shadow-2xl hover:shadow-3xl transition-all duration-300 transform hover:scale-110 hover:-translate-y-2 flex items-center justify-center cursor-pointer mb-6"
                            x-data="{ hover: false }"
                            @mouseenter="hover = true"
                            @mouseleave="hover = false">
-                            <!-- Icono con degradado transparente -->
-                            <div class="w-28 h-28 flex items-center justify-center relative">
+                            <!-- Icono con degradado -->
+                            <div class="w-28 h-28 flex items-center justify-center relative z-10">
                                 <svg class="w-28 h-28" 
                                      viewBox="0 0 24 24"
                                      fill="none">
