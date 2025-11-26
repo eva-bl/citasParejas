@@ -25,11 +25,12 @@ class PhotoPolicy
     }
 
     /**
-     * Determine if the user can view photos for a plan
+     * Determine if the user can view any photos
      */
-    public function viewAny(User $user, Plan $plan): bool
+    public function viewAny(User $user): bool
     {
-        return $user->hasCouple() && $user->couple_id === $plan->couple_id;
+        // En el contexto de admin, todos los admins pueden ver todas las fotos
+        return $user->isAdmin();
     }
 }
 

@@ -30,6 +30,15 @@ class CouplePolicy
     {
         return !$user->hasCouple();
     }
+
+    /**
+     * Determine if the user can view any couples
+     */
+    public function viewAny(User $user): bool
+    {
+        // En el contexto de admin, todos los admins pueden ver todas las parejas
+        return $user->isAdmin();
+    }
 }
 
 
