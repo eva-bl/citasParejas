@@ -55,18 +55,24 @@ new class extends Component
                         
                         <a href="{{ route('couple.create') }}" 
                            wire:navigate
-                           class="group relative w-48 h-48 rounded-full bg-white shadow-2xl hover:shadow-3xl transition-all duration-300 transform hover:scale-110 hover:-translate-y-2 flex items-center justify-center cursor-pointer mb-6"
+                           class="group relative w-48 h-48 rounded-full bg-white shadow-2xl hover:shadow-3xl transition-all duration-300 transform hover:scale-110 hover:-translate-y-2 flex items-center justify-center cursor-pointer mb-6 overflow-hidden"
                            x-data="{ hover: false }"
                            @mouseenter="hover = true"
-                           @mouseleave="hover = false"
-                           style="mask-image: radial-gradient(circle, transparent 0%, transparent 35%, white 35%, white 100%); -webkit-mask-image: radial-gradient(circle, transparent 0%, transparent 35%, white 35%, white 100%);">
-                            <!-- Icono transparente - se ve el fondo degradado a través -->
-                            <div class="absolute w-32 h-32 flex items-center justify-center">
+                           @mouseleave="hover = false">
+                            <!-- Icono con degradado transparente -->
+                            <div class="w-32 h-32 flex items-center justify-center relative">
                                 <svg class="w-32 h-32" 
                                      viewBox="0 0 24 24"
                                      fill="none">
+                                    <defs>
+                                        <linearGradient id="gradient-icon-1" x1="0%" y1="0%" x2="100%" y2="100%">
+                                            <stop offset="0%" style="stop-color:#ec4899;stop-opacity:1" />
+                                            <stop offset="50%" style="stop-color:#a855f7;stop-opacity:1" />
+                                            <stop offset="100%" style="stop-color:#3b82f6;stop-opacity:1" />
+                                        </linearGradient>
+                                    </defs>
                                     <path d="M12 4v16m8-8H4" 
-                                          stroke="transparent" 
+                                          stroke="url(#gradient-icon-1)" 
                                           stroke-width="3" 
                                           stroke-linecap="round" 
                                           stroke-linejoin="round"/>
@@ -90,18 +96,24 @@ new class extends Component
                         
                         <a href="{{ route('couple.join') }}" 
                            wire:navigate
-                           class="group relative w-48 h-48 rounded-full bg-white shadow-2xl hover:shadow-3xl transition-all duration-300 transform hover:scale-110 hover:-translate-y-2 flex items-center justify-center cursor-pointer mb-6"
+                           class="group relative w-48 h-48 rounded-full bg-white shadow-2xl hover:shadow-3xl transition-all duration-300 transform hover:scale-110 hover:-translate-y-2 flex items-center justify-center cursor-pointer mb-6 overflow-hidden"
                            x-data="{ hover: false }"
                            @mouseenter="hover = true"
-                           @mouseleave="hover = false"
-                           style="mask-image: radial-gradient(circle, transparent 0%, transparent 35%, white 35%, white 100%); -webkit-mask-image: radial-gradient(circle, transparent 0%, transparent 35%, white 35%, white 100%);">
-                            <!-- Icono transparente - se ve el fondo degradado a través -->
-                            <div class="absolute w-28 h-28 flex items-center justify-center">
+                           @mouseleave="hover = false">
+                            <!-- Icono con degradado transparente -->
+                            <div class="w-28 h-28 flex items-center justify-center relative">
                                 <svg class="w-28 h-28" 
                                      viewBox="0 0 24 24"
                                      fill="none">
+                                    <defs>
+                                        <linearGradient id="gradient-icon-2" x1="0%" y1="0%" x2="100%" y2="100%">
+                                            <stop offset="0%" style="stop-color:#ec4899;stop-opacity:1" />
+                                            <stop offset="50%" style="stop-color:#a855f7;stop-opacity:1" />
+                                            <stop offset="100%" style="stop-color:#3b82f6;stop-opacity:1" />
+                                        </linearGradient>
+                                    </defs>
                                     <path d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" 
-                                          stroke="transparent" 
+                                          stroke="url(#gradient-icon-2)" 
                                           stroke-width="2" 
                                           stroke-linecap="round" 
                                           stroke-linejoin="round"/>
