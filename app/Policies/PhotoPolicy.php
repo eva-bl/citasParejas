@@ -11,8 +11,18 @@ class PhotoPolicy
     /**
      * Determine if the user can upload photos to a plan
      */
-    public function create(User $user, Plan $plan): bool
+    public function create(User $user, ?Plan $plan = null): bool
     {
+        // En el contexto de admin, todos los admins pueden crear fotos
+        if ($user->isAdmin()) {
+            return true;
+        }
+        
+        // En el contexto normal, el usuario debe tener pareja y el plan debe pertenecer a esa pareja
+        if ($plan === null) {
+            return $user->hasCouple();
+        }
+        
         return $user->hasCouple() && $user->couple_id === $plan->couple_id;
     }
 
