@@ -56,29 +56,24 @@ new class extends Component
                         <a href="{{ route('couple.create') }}" 
                            wire:navigate
                            class="group relative w-48 h-48 rounded-full bg-white shadow-2xl hover:shadow-3xl transition-all duration-300 transform hover:scale-110 hover:-translate-y-2 flex items-center justify-center cursor-pointer mb-6"
-                           style="display: flex !important; background-color: white !important;">
-                            <!-- Icono con degradado -->
-                            <div class="w-32 h-32 flex items-center justify-center relative z-10">
-                                <svg class="w-32 h-32" 
-                                     viewBox="0 0 24 24"
-                                     fill="none">
-                                    <defs>
-                                        <linearGradient id="gradient-icon-1" x1="0%" y1="0%" x2="100%" y2="100%">
-                                            <stop offset="0%" style="stop-color:#ec4899;stop-opacity:1" />
-                                            <stop offset="50%" style="stop-color:#a855f7;stop-opacity:1" />
-                                            <stop offset="100%" style="stop-color:#3b82f6;stop-opacity:1" />
-                                        </linearGradient>
-                                    </defs>
-                                    <path d="M12 4v16m8-8H4" 
-                                          stroke="url(#gradient-icon-1)" 
-                                          stroke-width="3" 
-                                          stroke-linecap="round" 
-                                          stroke-linejoin="round"/>
+                           x-data="{ hover: false }"
+                           @mouseenter="hover = true"
+                           @mouseleave="hover = false">
+                            <!-- Icono con fondo transparente -->
+                            <div class="w-24 h-24 flex items-center justify-center">
+                                <svg class="w-20 h-20 text-pink-600 group-hover:text-pink-700 transition-colors" 
+                                     fill="none" 
+                                     stroke="currentColor" 
+                                     viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" 
+                                          stroke-linejoin="round" 
+                                          stroke-width="2" 
+                                          d="M12 4v16m8-8H4" />
                                 </svg>
                             </div>
                             
                             <!-- Efecto de brillo al hover -->
-                            <div class="absolute inset-0 rounded-full bg-gradient-to-br from-pink-500/20 via-purple-500/20 to-blue-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
+                            <div class="absolute inset-0 rounded-full bg-gradient-to-br from-pink-500/20 via-purple-500/20 to-blue-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                         </a>
                         
                         <p class="text-white/90 text-lg leading-relaxed max-w-xs">
@@ -95,29 +90,24 @@ new class extends Component
                         <a href="{{ route('couple.join') }}" 
                            wire:navigate
                            class="group relative w-48 h-48 rounded-full bg-white shadow-2xl hover:shadow-3xl transition-all duration-300 transform hover:scale-110 hover:-translate-y-2 flex items-center justify-center cursor-pointer mb-6"
-                           style="display: flex !important; background-color: white !important;">
-                            <!-- Icono con degradado -->
-                            <div class="w-28 h-28 flex items-center justify-center relative z-10">
-                                <svg class="w-28 h-28" 
-                                     viewBox="0 0 24 24"
-                                     fill="none">
-                                    <defs>
-                                        <linearGradient id="gradient-icon-2" x1="0%" y1="0%" x2="100%" y2="100%">
-                                            <stop offset="0%" style="stop-color:#ec4899;stop-opacity:1" />
-                                            <stop offset="50%" style="stop-color:#a855f7;stop-opacity:1" />
-                                            <stop offset="100%" style="stop-color:#3b82f6;stop-opacity:1" />
-                                        </linearGradient>
-                                    </defs>
-                                    <path d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" 
-                                          stroke="url(#gradient-icon-2)" 
+                           x-data="{ hover: false }"
+                           @mouseenter="hover = true"
+                           @mouseleave="hover = false">
+                            <!-- Icono con fondo transparente -->
+                            <div class="w-24 h-24 flex items-center justify-center">
+                                <svg class="w-16 h-16 text-purple-600 group-hover:text-purple-700 transition-colors" 
+                                     fill="none" 
+                                     stroke="currentColor" 
+                                     viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" 
+                                          stroke-linejoin="round" 
                                           stroke-width="2" 
-                                          stroke-linecap="round" 
-                                          stroke-linejoin="round"/>
+                                          d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
                                 </svg>
                             </div>
                             
                             <!-- Efecto de brillo al hover -->
-                            <div class="absolute inset-0 rounded-full bg-gradient-to-br from-purple-500/20 via-blue-500/20 to-pink-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
+                            <div class="absolute inset-0 rounded-full bg-gradient-to-br from-purple-500/20 via-blue-500/20 to-pink-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                         </a>
                         
                         <p class="text-white/90 text-lg leading-relaxed max-w-xs">
