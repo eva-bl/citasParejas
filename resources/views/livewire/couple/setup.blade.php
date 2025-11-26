@@ -95,7 +95,7 @@ new class extends Component
                            @mouseleave="hover = false">
                             <!-- Icono con fondo transparente -->
                             <div class="w-24 h-24 flex items-center justify-center">
-                                <svg class="w-16 h-16 text-purple-600 group-hover:text-purple-700 transition-colors" 
+                                <svg class="w-14 h-14 text-purple-600 group-hover:text-purple-700 transition-colors" 
                                      fill="none" 
                                      stroke="currentColor" 
                                      viewBox="0 0 24 24">
