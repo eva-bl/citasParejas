@@ -58,22 +58,23 @@ new class extends Component
                            class="group relative w-48 h-48 rounded-full bg-white shadow-2xl hover:shadow-3xl transition-all duration-300 transform hover:scale-110 hover:-translate-y-2 flex items-center justify-center cursor-pointer mb-6"
                            x-data="{ hover: false }"
                            @mouseenter="hover = true"
-                           @mouseleave="hover = false">
-                            <!-- Icono con fondo transparente -->
-                            <div class="w-24 h-24 flex items-center justify-center">
-                                <svg class="w-20 h-20 text-pink-600 group-hover:text-pink-700 transition-colors" 
-                                     fill="none" 
-                                     stroke="currentColor" 
-                                     viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" 
-                                          stroke-linejoin="round" 
-                                          stroke-width="2" 
-                                          d="M12 4v16m8-8H4" />
+                           @mouseleave="hover = false"
+                           style="mask-image: radial-gradient(circle, transparent 0%, transparent 35%, white 35%, white 100%); -webkit-mask-image: radial-gradient(circle, transparent 0%, transparent 35%, white 35%, white 100%);">
+                            <!-- Icono transparente - se ve el fondo degradado a través -->
+                            <div class="absolute w-32 h-32 flex items-center justify-center">
+                                <svg class="w-32 h-32" 
+                                     viewBox="0 0 24 24"
+                                     fill="none">
+                                    <path d="M12 4v16m8-8H4" 
+                                          stroke="transparent" 
+                                          stroke-width="3" 
+                                          stroke-linecap="round" 
+                                          stroke-linejoin="round"/>
                                 </svg>
                             </div>
                             
                             <!-- Efecto de brillo al hover -->
-                            <div class="absolute inset-0 rounded-full bg-gradient-to-br from-pink-500/20 via-purple-500/20 to-blue-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                            <div class="absolute inset-0 rounded-full bg-gradient-to-br from-pink-500/20 via-purple-500/20 to-blue-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
                         </a>
                         
                         <p class="text-white/90 text-lg leading-relaxed max-w-xs">
@@ -92,22 +93,23 @@ new class extends Component
                            class="group relative w-48 h-48 rounded-full bg-white shadow-2xl hover:shadow-3xl transition-all duration-300 transform hover:scale-110 hover:-translate-y-2 flex items-center justify-center cursor-pointer mb-6"
                            x-data="{ hover: false }"
                            @mouseenter="hover = true"
-                           @mouseleave="hover = false">
-                            <!-- Icono con fondo transparente -->
-                            <div class="w-24 h-24 flex items-center justify-center">
-                                <svg class="w-20 h-20 text-purple-600 group-hover:text-purple-700 transition-colors" 
-                                     fill="none" 
-                                     stroke="currentColor" 
-                                     viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" 
-                                          stroke-linejoin="round" 
+                           @mouseleave="hover = false"
+                           style="mask-image: radial-gradient(circle, transparent 0%, transparent 35%, white 35%, white 100%); -webkit-mask-image: radial-gradient(circle, transparent 0%, transparent 35%, white 35%, white 100%);">
+                            <!-- Icono transparente - se ve el fondo degradado a través -->
+                            <div class="absolute w-28 h-28 flex items-center justify-center">
+                                <svg class="w-28 h-28" 
+                                     viewBox="0 0 24 24"
+                                     fill="none">
+                                    <path d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" 
+                                          stroke="transparent" 
                                           stroke-width="2" 
-                                          d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+                                          stroke-linecap="round" 
+                                          stroke-linejoin="round"/>
                                 </svg>
                             </div>
                             
                             <!-- Efecto de brillo al hover -->
-                            <div class="absolute inset-0 rounded-full bg-gradient-to-br from-purple-500/20 via-blue-500/20 to-pink-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                            <div class="absolute inset-0 rounded-full bg-gradient-to-br from-purple-500/20 via-blue-500/20 to-pink-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
                         </a>
                         
                         <p class="text-white/90 text-lg leading-relaxed max-w-xs">
