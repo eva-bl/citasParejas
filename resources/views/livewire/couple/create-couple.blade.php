@@ -24,8 +24,7 @@ new class extends Component
 
 <div>
     <x-layouts.app :title="__('Crear Pareja')">
-        <div class="min-h-screen flex items-center justify-center py-12 px-4"
-             style="background: linear-gradient(135deg, #ec4899 0%, #a855f7 50%, #3b82f6 100%);">
+        <div class="min-h-screen flex items-center justify-center py-12 px-4">
             <div class="max-w-2xl w-full">
                 <div class="relative overflow-hidden rounded-3xl bg-white p-8 md:p-10 shadow-2xl"
                      x-data="{ 

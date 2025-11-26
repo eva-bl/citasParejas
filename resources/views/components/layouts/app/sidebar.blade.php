@@ -3,7 +3,8 @@
     <head>
         @include('partials.head')
     </head>
-    <body class="min-h-screen bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50"
+    <body class="min-h-screen"
+          style="background: linear-gradient(135deg, #ec4899 0%, #a855f7 50%, #3b82f6 100%);"
           x-data="{ 
               sidebarCollapsed: localStorage.getItem('sidebarCollapsed') === 'true',
               toggleSidebar() {
@@ -300,11 +301,9 @@
 
         <!-- Main Content - Se ajusta dinámicamente al ancho del sidebar -->
         <div :class="sidebarCollapsed ? 'lg:ml-20' : 'lg:ml-64'" 
-             class="transition-all duration-300">
+             class="transition-all duration-300 min-h-screen">
             <main class="min-h-screen">
-                <div class="container mx-auto px-4 py-6 pt-16 lg:pt-6">
-                    {{ $slot }}
-                </div>
+                {{ $slot }}
             </main>
         </div>
 
