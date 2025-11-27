@@ -190,10 +190,12 @@ new class extends Component {
 
 }; ?>
 
-<section class="w-full bg-white min-h-screen">
+<section class="w-full min-h-screen py-8">
     <x-settings.layout>
-        <!-- Avatar and Name Section -->
-        <div class="mb-8 flex items-center gap-6">
+        <!-- Card Container -->
+        <div class="max-w-3xl mx-auto bg-white/60 backdrop-blur-xl shadow-lg rounded-2xl p-8 space-y-6">
+            <!-- Avatar and Name Section -->
+            <div class="flex items-center gap-6">
             <div class="relative group flex-shrink-0">
                 @php
                     $user = auth()->user()->fresh();
@@ -284,9 +286,9 @@ new class extends Component {
             <div>
                 <h1 class="text-4xl font-bold text-purple-700">{{ $user->name }}</h1>
             </div>
-        </div>
+            </div>
 
-        <form wire:submit="updateProfileInformation" class="my-6 w-full space-y-6">
+            <form wire:submit="updateProfileInformation" class="w-full space-y-6">
             <div>
                 <label class="block text-sm font-medium text-purple-600 mb-2">
                     {{ __('Nombre') }}
@@ -378,9 +380,10 @@ new class extends Component {
                 <x-action-message class="me-3 text-purple-600 font-medium" on="profile-updated">
                     {{ __('Guardado.') }}
                 </x-action-message>
-            </div>
-        </form>
+                </div>
+            </form>
 
-        <livewire:settings.delete-user-form />
+            <livewire:settings.delete-user-form />
+        </div>
     </x-settings.layout>
 </section>
