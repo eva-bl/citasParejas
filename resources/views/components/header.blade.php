@@ -1,5 +1,9 @@
+@php
+    $isHomePage = request()->routeIs('home');
+@endphp
+
 <!-- Navigation Header -->
-<nav class="fixed top-0 left-0 right-0 w-full z-50 bg-white backdrop-blur-md border-b border-neutral-200 transition-all duration-300 shadow-sm"
+<nav class="fixed top-0 left-0 right-0 w-full z-50 backdrop-blur-md border-b transition-all duration-300 shadow-sm {{ $isHomePage ? 'bg-gradient-to-r from-pink-500 via-purple-600 to-blue-600 border-white/20' : 'bg-white border-neutral-200' }}"
      x-data="{ scrolled: false }"
      @scroll.window="scrolled = window.scrollY > 10"
      :class="scrolled ? 'shadow-lg' : ''">
@@ -9,8 +13,8 @@
                 @auth
                     <!-- Mobile Menu Button - Solo visible en móvil -->
                     <button @click="$dispatch('toggle-mobile-menu')" 
-                            class="lg:hidden p-2 rounded-lg hover:bg-pink-50/50 transition-all">
-                        <svg class="w-6 h-6 text-neutral-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            class="lg:hidden p-2 rounded-lg transition-all {{ $isHomePage ? 'hover:bg-white/20 text-white' : 'hover:bg-pink-50/50 text-neutral-700' }}">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
                         </svg>
                     </button>
@@ -19,7 +23,7 @@
                     <div class="w-10 h-10 bg-gradient-to-br from-pink-500 to-purple-600 rounded-lg flex items-center justify-center">
                         <span class="text-white text-xl font-bold">💑</span>
                     </div>
-                    <span class="text-xl font-bold text-neutral-900">Citas</span>
+                    <span class="text-xl font-bold {{ $isHomePage ? 'text-white' : 'text-neutral-900' }}">Citas</span>
                 </a>
             </div>
             <div class="flex items-center space-x-4">
@@ -31,11 +35,11 @@
                         </button>
                     </form>
                 @else
-                    <a href="{{ route('login') }}" class="px-4 py-2 text-sm font-medium text-neutral-700 hover:text-neutral-900 transition-colors">
+                    <a href="{{ route('login') }}" class="px-4 py-2 text-sm font-medium {{ $isHomePage ? 'text-white hover:text-white/80' : 'text-neutral-700 hover:text-neutral-900' }} transition-colors">
                         {{ __('Iniciar Sesión') }}
                     </a>
                     @if (Route::has('register'))
-                        <a href="{{ route('register') }}" class="px-4 py-2 bg-gradient-to-r from-pink-500 to-purple-600 text-white rounded-lg text-sm font-medium hover:shadow-lg transform hover:scale-105 transition-all duration-200">
+                        <a href="{{ route('register') }}" class="px-4 py-2 {{ $isHomePage ? 'bg-white text-pink-600 hover:bg-white/90' : 'bg-gradient-to-r from-pink-500 to-purple-600 text-white' }} rounded-lg text-sm font-medium hover:shadow-lg transform hover:scale-105 transition-all duration-200">
                             {{ __('Registrarse') }}
                         </a>
                     @endif
