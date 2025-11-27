@@ -45,6 +45,6 @@ Route::middleware(['auth'])->group(function () {
     Volt::route('statistics', 'statistics.couple-stats-dashboard')->name('statistics.index');
 
     // Badges routes
-    Volt::route('badges', 'badges.user-badges-display')->name('badges.index');
+    Volt::route('badges', 'badges.index')->name('badges.index');
     Volt::route('badges/couple', 'badges.couple-badges-display')->name('badges.couple');
 });
