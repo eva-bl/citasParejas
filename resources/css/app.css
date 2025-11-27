@@ -64,3 +64,12 @@ select:focus[data-flux-control] {
 /* \[:where(&)\]:size-4 {
     @apply size-4;
 } */
+
+/* Estilos para páginas de autenticación */
+body:has([data-auth-page]) [data-flux-label] {
+    @apply bg-gradient-to-r from-pink-600 via-purple-600 to-blue-600 bg-clip-text text-transparent font-medium;
+}
+
+body:has([data-auth-page]) [data-flux-checkbox-label] {
+    @apply bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 bg-clip-text text-transparent;
+}
