@@ -116,12 +116,12 @@ new class extends Component {
 }; ?>
 
 <section class="w-full bg-white min-h-screen">
-    <x-settings.layout :heading="__('Mi Perfil')" :subheading="__('Actualiza tu información personal')">
-        <!-- Avatar Section -->
-        <div class="mb-8 flex flex-col items-center">
-            <div class="relative group">
-                @if(auth()->user()->hasAvatar())
-                    <img src="{{ auth()->user()->avatar_url }}" 
+    <x-settings.layout>
+        <!-- Avatar and Name Section -->
+        <div class="mb-8 flex items-center gap-6" wire:key="avatar-section-{{ auth()->user()->id }}">
+            <div class="relative group flex-shrink-0">
+                @if(auth()->user()->fresh()->hasAvatar())
+                    <img src="{{ auth()->user()->fresh()->avatar_url }}" 
                          alt="{{ auth()->user()->name }}" 
                          class="w-32 h-32 rounded-full object-cover border-4 border-white shadow-lg">
                 @else
@@ -202,6 +202,9 @@ new class extends Component {
                         </div>
                     </div>
                 </div>
+            </div>
+            <div>
+                <h1 class="text-4xl font-bold text-purple-700">{{ auth()->user()->name }}</h1>
             </div>
         </div>
 

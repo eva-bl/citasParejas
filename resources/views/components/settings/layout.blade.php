@@ -29,8 +29,12 @@
     <flux:separator class="md:hidden" />
 
     <div class="flex-1 self-stretch max-md:pt-6">
-        <h1 class="text-3xl font-bold text-purple-700 mb-2">{{ $heading ?? '' }}</h1>
-        <p class="text-base text-purple-600 mb-6">{{ $subheading ?? '' }}</p>
+        @if(isset($heading) && $heading)
+            <h1 class="text-3xl font-bold text-purple-700 mb-2">{{ $heading }}</h1>
+        @endif
+        @if(isset($subheading) && $subheading)
+            <p class="text-base text-purple-600 mb-6">{{ $subheading }}</p>
+        @endif
 
         <div class="mt-5 w-full max-w-lg">
             {{ $slot }}
