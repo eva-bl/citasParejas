@@ -5,8 +5,11 @@
     </head>
     <body class="min-h-screen"
           style="background: linear-gradient(135deg, #ec4899 0%, #a855f7 50%, #3b82f6 100%);">
+        <!-- Header -->
+        <x-header />
+        
         <!-- Desktop Sidebar - Fija y Estrecha -->
-        <aside class="hidden lg:flex fixed left-0 top-0 bottom-0 w-16 flex-col border-r border-pink-200/50 bg-white z-30">
+        <aside class="hidden lg:flex fixed left-0 top-16 bottom-0 w-16 flex-col border-r border-pink-200/50 bg-white z-30">
             <div class="flex flex-col h-full p-2">
                 <!-- Logo -->
                 <div class="flex items-center justify-center mb-4 pt-2">
@@ -143,26 +146,10 @@
         </aside>
 
         <!-- Mobile Sidebar - Ya es desplegable -->
-        <div x-data="{ open: false }" class="lg:hidden">
-            <!-- Mobile Header -->
-            <header class="bg-white/80 backdrop-blur-md border-b border-pink-200/50 shadow-sm sticky top-0 z-40">
-                <div class="flex items-center justify-between px-4 h-16">
-                    <button @click="open = !open" class="p-2 rounded-lg hover:bg-pink-50/50 transition-all">
-                        <svg class="w-6 h-6 text-neutral-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-                        </svg>
-                    </button>
-                    
-                    <a href="{{ route('dashboard') }}" class="flex items-center space-x-2" wire:navigate>
-                        <div class="w-8 h-8 bg-gradient-to-br from-pink-500 to-purple-600 rounded-lg flex items-center justify-center">
-                            <span class="text-white text-lg font-bold">💑</span>
-                        </div>
-                        <span class="text-lg font-bold bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent">Citas</span>
-                    </a>
-
-                    <div class="w-10"></div>
-                </div>
-            </header>
+        <div x-data="{ open: false }" 
+             @toggle-mobile-menu.window="open = !open"
+             class="lg:hidden">
+            <!-- Mobile Header - Oculto porque ya tenemos el header global -->
 
             <!-- Mobile Sidebar Overlay -->
             <div x-show="open" 
@@ -262,8 +249,8 @@
             </aside>
         </div>
 
-        <!-- Main Content - Ajustado al sidebar fijo -->
-        <div class="lg:ml-16 min-h-screen">
+        <!-- Main Content - Ajustado al sidebar fijo y header -->
+        <div class="lg:ml-16 min-h-screen pt-16">
             <main class="min-h-screen p-4 lg:p-6">
                 {{ $slot }}
             </main>

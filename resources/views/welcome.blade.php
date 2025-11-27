@@ -14,35 +14,7 @@
 </head>
 <body class="bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50 dark:from-neutral-900 dark:via-neutral-800 dark:to-neutral-900 min-h-screen">
     <!-- Navigation -->
-    <nav class="fixed top-0 w-full z-50 bg-white/80 dark:bg-neutral-900/80 backdrop-blur-md border-b border-neutral-200 dark:border-neutral-800 transition-all duration-300" 
-         :class="scrolled ? 'shadow-lg' : ''">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center h-16">
-                <a href="/" class="flex items-center space-x-2 hover:opacity-80 transition-opacity">
-                    <div class="w-10 h-10 bg-gradient-to-br from-pink-500 to-purple-600 rounded-lg flex items-center justify-center">
-                        <span class="text-white text-xl font-bold">💑</span>
-                    </div>
-                    <span class="text-xl font-bold text-neutral-900 dark:text-white">Citas</span>
-                </a>
-                <div class="flex items-center space-x-4">
-                    @auth
-                        <a href="{{ route('dashboard') }}" class="px-4 py-2 text-sm font-medium text-neutral-700 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white transition-colors">
-                            Dashboard
-                        </a>
-                    @else
-                        <a href="{{ route('login') }}" class="px-4 py-2 text-sm font-medium text-neutral-700 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white transition-colors">
-                            Iniciar Sesión
-                        </a>
-                        @if (Route::has('register'))
-                            <a href="{{ route('register') }}" class="px-4 py-2 bg-gradient-to-r from-pink-500 to-purple-600 text-white rounded-lg text-sm font-medium hover:shadow-lg transform hover:scale-105 transition-all duration-200">
-                                Registrarse
-                            </a>
-                        @endif
-                    @endauth
-                </div>
-            </div>
-        </div>
-    </nav>
+    <x-header />
 
     <!-- Hero Section -->
     <section class="pt-32 pb-20 px-4 sm:px-6 lg:px-8">
