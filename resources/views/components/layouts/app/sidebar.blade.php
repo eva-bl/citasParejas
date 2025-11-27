@@ -4,14 +4,7 @@
         @include('partials.head')
     </head>
     <body class="min-h-screen"
-          style="background: linear-gradient(135deg, #ec4899 0%, #a855f7 50%, #3b82f6 100%);"
-          x-data="{ 
-              sidebarCollapsed: localStorage.getItem('sidebarCollapsed') === 'true',
-              toggleSidebar() {
-                  this.sidebarCollapsed = !this.sidebarCollapsed;
-                  localStorage.setItem('sidebarCollapsed', this.sidebarCollapsed);
-              }
-          }">
+          style="background: linear-gradient(135deg, #ec4899 0%, #a855f7 50%, #3b82f6 100%);">
         <!-- Desktop Sidebar - Fija y Estrecha -->
         <aside class="hidden lg:flex fixed left-0 top-0 bottom-0 w-16 flex-col border-r border-pink-200/50 bg-white z-30">
             <div class="flex flex-col h-full p-2">
@@ -271,7 +264,7 @@
 
         <!-- Main Content - Ajustado al sidebar fijo -->
         <div class="lg:ml-16 min-h-screen">
-            <main class="min-h-screen">
+            <main class="min-h-screen p-4 lg:p-6">
                 {{ $slot }}
             </main>
         </div>
