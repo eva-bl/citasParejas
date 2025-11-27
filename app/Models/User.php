@@ -154,4 +154,23 @@ class User extends Authenticatable
     {
         return $this->is_admin === true;
     }
+
+    /**
+     * Get the avatar URL
+     */
+    public function getAvatarUrlAttribute(): string
+    {
+        if ($this->avatar_path) {
+            return \Illuminate\Support\Facades\Storage::disk('public')->url($this->avatar_path);
+        }
+        return '';
+    }
+
+    /**
+     * Check if user has an avatar
+     */
+    public function hasAvatar(): bool
+    {
+        return !empty($this->avatar_path);
+    }
 }
