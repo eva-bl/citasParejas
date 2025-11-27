@@ -1,14 +1,19 @@
 <?php
 
+use App\Actions\Plan\GetPlanOfTheYearAction;
 use Livewire\Volt\Component;
 
 new class extends Component
 {
-    public function mount()
+    public $planOfTheYear = null;
+
+    public function mount(GetPlanOfTheYearAction $getPlanOfTheYear)
     {
         if (!auth()->user()->hasCouple()) {
             return $this->redirect(route('couple.setup'), navigate: true);
         }
+        
+        $this->planOfTheYear = $getPlanOfTheYear->execute(auth()->user()->couple);
     }
 }; ?>
 

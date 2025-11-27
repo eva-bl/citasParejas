@@ -220,7 +220,48 @@ new class extends Component
                     </flux:field>
                 </div>
 
-                @if($categoryFilter || $statusFilter || $dateFrom || $dateTo || $createdByFilter || $search)
+                <!-- Advanced Filters -->
+                <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mt-4">
+                    <flux:field>
+                        <flux:label>{{ __('Valoración Mínima') }}</flux:label>
+                        <flux:input type="number" wire:model.live.debounce.300ms="ratingMin" min="0" max="5" step="0.1" placeholder="0" />
+                    </flux:field>
+
+                    <flux:field>
+                        <flux:label>{{ __('Valoración Máxima') }}</flux:label>
+                        <flux:input type="number" wire:model.live.debounce.300ms="ratingMax" min="0" max="5" step="0.1" placeholder="5" />
+                    </flux:field>
+
+                    <flux:field>
+                        <flux:label>{{ __('Coste Mínimo (€)') }}</flux:label>
+                        <flux:input type="number" wire:model.live.debounce.300ms="costMin" min="0" step="0.01" placeholder="0" />
+                    </flux:field>
+
+                    <flux:field>
+                        <flux:label>{{ __('Coste Máximo (€)') }}</flux:label>
+                        <flux:input type="number" wire:model.live.debounce.300ms="costMax" min="0" step="0.01" placeholder="∞" />
+                    </flux:field>
+                </div>
+
+                <!-- Boolean Filters -->
+                <div class="grid md:grid-cols-3 gap-4 mt-4">
+                    <flux:field>
+                        <flux:checkbox wire:model.live="onlyFavorites" />
+                        <flux:label>{{ __('Solo Favoritos') }}</flux:label>
+                    </flux:field>
+
+                    <flux:field>
+                        <flux:checkbox wire:model.live="withoutRatings" />
+                        <flux:label>{{ __('Sin Valorar') }}</flux:label>
+                    </flux:field>
+
+                    <flux:field>
+                        <flux:checkbox wire:model.live="withoutPhotos" />
+                        <flux:label>{{ __('Sin Fotos') }}</flux:label>
+                    </flux:field>
+                </div>
+
+                @if($categoryFilter || $statusFilter || $dateFrom || $dateTo || $createdByFilter || $ratingMin || $ratingMax || $costMin || $costMax || $onlyFavorites || $withoutRatings || $withoutPhotos || $search)
                     <div class="mt-4">
                         <flux:button wire:click="clearFilters" variant="ghost" size="sm">
                             {{ __('Limpiar Filtros') }}
