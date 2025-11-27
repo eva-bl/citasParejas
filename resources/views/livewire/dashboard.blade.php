@@ -88,6 +88,30 @@ new class extends Component
                 <div class="absolute bottom-0 left-0 w-48 h-48 bg-purple-400/20 rounded-full blur-2xl -ml-24 -mb-24"></div>
             </div>
 
+            <!-- Export Actions -->
+            <div class="mb-6 flex gap-4 justify-end">
+                <form action="{{ route('export.pdf') }}" method="POST" class="inline">
+                    @csrf
+                    <button type="submit" 
+                            class="px-6 py-3 bg-gradient-to-r from-red-500 to-pink-600 text-white rounded-xl hover:shadow-xl transition-all font-semibold flex items-center gap-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                        </svg>
+                        {{ __('Exportar PDF') }}
+                    </button>
+                </form>
+                <form action="{{ route('export.csv') }}" method="POST" class="inline">
+                    @csrf
+                    <button type="submit" 
+                            class="px-6 py-3 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-xl hover:shadow-xl transition-all font-semibold flex items-center gap-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                        {{ __('Exportar CSV') }}
+                    </button>
+                </form>
+            </div>
+
             <!-- Quick Actions -->
             <div class="grid md:grid-cols-2 gap-6">
                 <a href="{{ route('plans.index') }}" 

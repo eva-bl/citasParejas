@@ -49,4 +49,17 @@ Route::middleware(['auth'])->group(function () {
     // Badges routes
     Volt::route('badges', 'badges.index')->name('badges.index');
     Volt::route('badges/couple', 'badges.couple-badges-display')->name('badges.couple');
+
+    // Export routes
+    Route::post('export/pdf', function () {
+        $action = app(\App\Actions\Export\ExportPlansToPdfAction::class);
+        $filePath = $action->execute(auth()->user()->couple);
+        return response()->download($filePath)->deleteFileAfterSend();
+    })->name('export.pdf');
+    
+    Route::post('export/csv', function () {
+        $action = app(\App\Actions\Export\ExportPlansToCsvAction::class);
+        $filePath = $action->execute(auth()->user()->couple);
+        return response()->download($filePath)->deleteFileAfterSend();
+    })->name('export.csv');
 });
