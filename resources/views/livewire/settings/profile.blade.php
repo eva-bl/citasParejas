@@ -196,32 +196,32 @@ new class extends Component {
         <div class="max-w-3xl mx-auto bg-white/60 backdrop-blur-xl shadow-lg rounded-2xl p-8 space-y-6">
             <!-- Avatar and Name Section -->
             <div class="flex items-center gap-6">
-            <div class="relative group flex-shrink-0">
-                @php
-                    $user = auth()->user()->fresh();
-                @endphp
-                @if($user->hasAvatar())
-                    <img src="{{ $user->avatar_url }}" 
-                         alt="{{ $user->name }}" 
-                         class="w-32 h-32 rounded-full object-cover border-4 border-white shadow-lg">
-                @else
-                    <div class="w-32 h-32 rounded-full bg-gradient-to-br from-pink-500 to-purple-600 flex items-center justify-center text-white text-4xl font-bold shadow-lg">
-                        {{ $user->initials() }}
-                    </div>
-                @endif
-                
-                <!-- Edit Button -->
-                <div x-data="{ open: false }" class="absolute bottom-0 right-0">
-                    <button @click="open = !open" 
-                            class="w-10 h-10 rounded-full bg-gradient-to-r from-pink-500 to-purple-600 text-white flex items-center justify-center shadow-lg hover:shadow-xl transition-all transform hover:scale-110"
-                            title="{{ __('Editar foto de perfil') }}">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
-                        </svg>
-                    </button>
+                <div class="relative group flex-shrink-0">
+                    @php
+                        $user = auth()->user()->fresh();
+                    @endphp
+                    @if($user->hasAvatar())
+                        <img src="{{ $user->avatar_url }}" 
+                             alt="{{ $user->name }}" 
+                             class="w-32 h-32 rounded-full object-cover border-4 border-white shadow-lg">
+                    @else
+                        <div class="w-32 h-32 rounded-full bg-gradient-to-br from-pink-500 to-purple-600 flex items-center justify-center text-white text-4xl font-bold shadow-lg">
+                            {{ $user->initials() }}
+                        </div>
+                    @endif
+                    
+                    <!-- Edit Button -->
+                    <div x-data="{ open: false }" class="absolute bottom-0 right-0">
+                        <button @click="open = !open" 
+                                class="w-10 h-10 rounded-full bg-gradient-to-r from-pink-500 to-purple-600 text-white flex items-center justify-center shadow-lg hover:shadow-xl transition-all transform hover:scale-110"
+                                title="{{ __('Editar foto de perfil') }}">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                            </svg>
+                        </button>
 
-                    <!-- Dropdown Menu -->
-                    <div x-show="open" 
+                        <!-- Dropdown Menu -->
+                        <div x-show="open" 
                          @click.away="open = false"
                          x-transition:enter="transition ease-out duration-200"
                          x-transition:enter-start="opacity-0 scale-95"
@@ -229,63 +229,63 @@ new class extends Component {
                          x-transition:leave="transition ease-in duration-75"
                          x-transition:leave-start="opacity-100 scale-100"
                          x-transition:leave-end="opacity-0 scale-95"
-                         class="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-lg ring-1 ring-black ring-opacity-5 z-50"
-                         style="display: none;">
-                        <div class="py-1" role="menu">
-                            <!-- Upload Photo -->
-                            <label class="flex items-center gap-3 px-4 py-2 text-sm text-neutral-700 hover:bg-pink-50 hover:text-pink-600 transition-colors cursor-pointer" role="menuitem">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                </svg>
-                                <span>{{ __('Elegir desde galería') }}</span>
-                                <input type="file" 
-                                       wire:model="avatar" 
-                                       accept="image/*" 
-                                       class="hidden"
-                                       @change="$wire.uploadAvatar()">
-                            </label>
+                             class="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-lg ring-1 ring-black ring-opacity-5 z-50"
+                             style="display: none;">
+                            <div class="py-1" role="menu">
+                                <!-- Upload Photo -->
+                                <label class="flex items-center gap-3 px-4 py-2 text-sm text-neutral-700 hover:bg-pink-50 hover:text-pink-600 transition-colors cursor-pointer" role="menuitem">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                    </svg>
+                                    <span>{{ __('Elegir desde galería') }}</span>
+                                    <input type="file" 
+                                           wire:model="avatar" 
+                                           accept="image/*" 
+                                           class="hidden"
+                                           @change="$wire.uploadAvatar()">
+                                </label>
 
-                            <!-- Upload Photo File -->
-                            <label class="flex items-center gap-3 px-4 py-2 text-sm text-neutral-700 hover:bg-pink-50 hover:text-pink-600 transition-colors cursor-pointer" role="menuitem">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
-                                </svg>
-                                <span>{{ __('Subir foto') }}</span>
-                                <input type="file" 
-                                       wire:model="avatar" 
-                                       accept="image/*" 
-                                       class="hidden"
-                                       @change="$wire.uploadAvatar()">
-                            </label>
+                                <!-- Upload Photo File -->
+                                <label class="flex items-center gap-3 px-4 py-2 text-sm text-neutral-700 hover:bg-pink-50 hover:text-pink-600 transition-colors cursor-pointer" role="menuitem">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                                    </svg>
+                                    <span>{{ __('Subir foto') }}</span>
+                                    <input type="file" 
+                                           wire:model="avatar" 
+                                           accept="image/*" 
+                                           class="hidden"
+                                           @change="$wire.uploadAvatar()">
+                                </label>
 
-                            <!-- Choose Avatar -->
-                            <button @click="open = false; $wire.showAvatarMenu = true" 
-                                    class="w-full flex items-center gap-3 px-4 py-2 text-sm text-neutral-700 hover:bg-pink-50 hover:text-pink-600 transition-colors text-left" 
-                                    role="menuitem">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                                </svg>
-                                <span>{{ __('Elegir avatar') }}</span>
-                            </button>
-
-                            @if(auth()->user()->hasAvatar())
-                                <div class="border-t border-neutral-200 my-1"></div>
-                                <button @click="open = false; $wire.removeAvatar()" 
-                                        class="w-full flex items-center gap-3 px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors text-left" 
+                                <!-- Choose Avatar -->
+                                <button @click="open = false; $wire.showAvatarMenu = true" 
+                                        class="w-full flex items-center gap-3 px-4 py-2 text-sm text-neutral-700 hover:bg-pink-50 hover:text-pink-600 transition-colors text-left" 
                                         role="menuitem">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                                     </svg>
-                                    <span>{{ __('Quitar foto de perfil') }}</span>
+                                    <span>{{ __('Elegir avatar') }}</span>
                                 </button>
-                            @endif
+
+                                @if(auth()->user()->hasAvatar())
+                                    <div class="border-t border-neutral-200 my-1"></div>
+                                    <button @click="open = false; $wire.removeAvatar()" 
+                                            class="w-full flex items-center gap-3 px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors text-left" 
+                                            role="menuitem">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                        </svg>
+                                        <span>{{ __('Quitar foto de perfil') }}</span>
+                                    </button>
+                                @endif
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div>
-                <h1 class="text-4xl font-bold text-purple-700">{{ $user->name }}</h1>
-            </div>
+                <div>
+                    <h1 class="text-4xl font-bold text-purple-700">{{ $user->name }}</h1>
+                </div>
             </div>
 
             <form wire:submit="updateProfileInformation" class="w-full space-y-6">
