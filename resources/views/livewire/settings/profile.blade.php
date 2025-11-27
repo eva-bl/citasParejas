@@ -76,8 +76,13 @@ new class extends Component {
         $user->avatar_path = $path;
         $user->save();
 
+        // Refresh user in session
+        Auth::setUser($user->fresh());
+
         $this->avatar = null;
         $this->showAvatarMenu = false;
+        
+        // Refresh the component to show the new avatar
         $this->dispatch('avatar-updated');
     }
 
@@ -93,6 +98,9 @@ new class extends Component {
             $user->avatar_path = null;
             $user->save();
         }
+
+        // Refresh user in session
+        Auth::setUser($user->fresh());
 
         $this->showAvatarMenu = false;
         $this->dispatch('avatar-updated');
@@ -118,15 +126,18 @@ new class extends Component {
 <section class="w-full bg-white min-h-screen">
     <x-settings.layout>
         <!-- Avatar and Name Section -->
-        <div class="mb-8 flex items-center gap-6" wire:key="avatar-section-{{ auth()->user()->id }}">
+        <div class="mb-8 flex items-center gap-6">
             <div class="relative group flex-shrink-0">
-                @if(auth()->user()->fresh()->hasAvatar())
-                    <img src="{{ auth()->user()->fresh()->avatar_url }}" 
-                         alt="{{ auth()->user()->name }}" 
+                @php
+                    $user = auth()->user()->fresh();
+                @endphp
+                @if($user->hasAvatar())
+                    <img src="{{ $user->avatar_url }}" 
+                         alt="{{ $user->name }}" 
                          class="w-32 h-32 rounded-full object-cover border-4 border-white shadow-lg">
                 @else
                     <div class="w-32 h-32 rounded-full bg-gradient-to-br from-pink-500 to-purple-600 flex items-center justify-center text-white text-4xl font-bold shadow-lg">
-                        {{ auth()->user()->initials() }}
+                        {{ $user->initials() }}
                     </div>
                 @endif
                 
@@ -204,7 +215,7 @@ new class extends Component {
                 </div>
             </div>
             <div>
-                <h1 class="text-4xl font-bold text-purple-700">{{ auth()->user()->name }}</h1>
+                <h1 class="text-4xl font-bold text-purple-700">{{ $user->name }}</h1>
             </div>
         </div>
 
