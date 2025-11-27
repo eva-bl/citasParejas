@@ -19,12 +19,6 @@
                         </svg>
                     </button>
                 @endauth
-                <a href="{{ route('home') }}" class="flex items-center space-x-2 hover:opacity-80 transition-opacity" wire:navigate>
-                    <div class="w-10 h-10 bg-gradient-to-br from-pink-500 to-purple-600 rounded-lg flex items-center justify-center">
-                        <span class="text-white text-xl font-bold">💑</span>
-                    </div>
-                    <span class="text-xl font-bold {{ $isHomePage ? 'text-white' : 'text-neutral-900' }}">Citas</span>
-                </a>
             </div>
             <div class="flex items-center space-x-4">
                 @auth
@@ -39,7 +33,7 @@
                         {{ __('Iniciar Sesión') }}
                     </a>
                     @if (Route::has('register'))
-                        <a href="{{ route('register') }}" class="px-4 py-2 {{ $isHomePage ? 'bg-white/20 backdrop-blur-sm border border-white/50 text-white hover:bg-white/30' : 'bg-gradient-to-r from-pink-500 to-purple-600 text-white' }} rounded-lg text-sm font-medium hover:shadow-lg transform hover:scale-105 transition-all duration-200">
+                        <a href="{{ route('register') }}" class="px-4 py-2 {{ $isHomePage ? 'bg-white text-pink-600 hover:bg-white/90' : 'bg-gradient-to-r from-pink-500 to-purple-600 text-white' }} rounded-lg text-sm font-medium hover:shadow-lg transform hover:scale-105 transition-all duration-200">
                             {{ __('Registrarse') }}
                         </a>
                     @endif
