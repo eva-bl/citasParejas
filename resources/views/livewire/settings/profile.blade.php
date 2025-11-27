@@ -196,29 +196,41 @@ new class extends Component {
         <div class="max-w-3xl mx-auto bg-white/60 backdrop-blur-xl shadow-lg rounded-2xl p-8 space-y-6">
             <!-- Avatar and Name Section -->
             <div class="flex items-center gap-6">
-                <div class="relative group flex-shrink-0">
+                <div x-data="{ open: false }" class="relative flex-shrink-0 group">
                     @php
                         $user = auth()->user()->fresh();
                     @endphp
-                    @if($user->hasAvatar())
-                        <img src="{{ $user->avatar_url }}" 
-                             alt="{{ $user->name }}" 
-                             class="w-32 h-32 rounded-full object-cover border-4 border-white shadow-lg">
-                    @else
-                        <div class="w-32 h-32 rounded-full bg-gradient-to-br from-pink-500 to-purple-600 flex items-center justify-center text-white text-4xl font-bold shadow-lg">
-                            {{ $user->initials() }}
-                        </div>
-                    @endif
                     
-                    <!-- Edit Button -->
-                    <div x-data="{ open: false }" class="absolute bottom-0 right-0">
-                        <button @click="open = !open" 
-                                class="w-10 h-10 rounded-full bg-gradient-to-r from-pink-500 to-purple-600 text-white flex items-center justify-center shadow-lg hover:shadow-xl transition-all transform hover:scale-110"
-                                title="{{ __('Editar foto de perfil') }}">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                    <!-- Avatar Container - Clickable -->
+                    <div class="relative w-32 h-32 rounded-full overflow-hidden cursor-pointer border-4 border-white shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-105"
+                         @click="open = !open">
+                        @if($user->hasAvatar())
+                            <img src="{{ $user->avatar_url }}" 
+                                 alt="{{ $user->name }}" 
+                                 class="w-full h-full object-cover">
+                        @else
+                            <div class="w-full h-full bg-gradient-to-br from-pink-500 to-purple-600 flex items-center justify-center text-white text-4xl font-bold">
+                                {{ $user->initials() }}
+                            </div>
+                        @endif
+                        
+                        <!-- Overlay con icono de cámara - Solo visible en hover -->
+                        <div class="absolute inset-0 bg-black/40 backdrop-blur-sm rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
                             </svg>
-                        </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Botón pequeño visible siempre en la esquina inferior derecha -->
+                    <button @click.stop="open = !open" 
+                            class="absolute bottom-0 right-0 w-10 h-10 rounded-full bg-gradient-to-r from-pink-500 to-purple-600 text-white flex items-center justify-center shadow-lg hover:shadow-xl transition-all transform hover:scale-110 z-10"
+                            title="{{ __('Editar foto de perfil') }}">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                        </svg>
+                    </button>
 
                         <!-- Dropdown Menu -->
                         <div x-show="open" 
