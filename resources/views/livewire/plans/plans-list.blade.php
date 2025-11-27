@@ -54,12 +54,15 @@ new class extends Component
             ->with(['category', 'createdBy'])
             ->withCount(['ratings', 'photos']);
 
-        // Search
+        // Search - Full text search including comments
         if ($this->search) {
             $query->where(function ($q) {
                 $q->where('title', 'like', '%' . $this->search . '%')
                   ->orWhere('description', 'like', '%' . $this->search . '%')
-                  ->orWhere('location', 'like', '%' . $this->search . '%');
+                  ->orWhere('location', 'like', '%' . $this->search . '%')
+                  ->orWhereHas('ratings', function ($ratingQuery) {
+                      $ratingQuery->where('comment', 'like', '%' . $this->search . '%');
+                  });
             });
         }
 

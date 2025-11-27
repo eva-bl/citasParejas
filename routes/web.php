@@ -40,6 +40,8 @@ Route::middleware(['auth'])->group(function () {
     Volt::route('plans/create', 'plans.create-plan')->name('plans.create');
     Volt::route('plans/{plan}', 'plans.plan-detail')->name('plans.show');
     Volt::route('plans/{plan}/edit', 'plans.edit-plan')->name('plans.edit');
+    Volt::route('plans/calendar', 'plans.plans-calendar')->name('plans.calendar');
+    Volt::route('plans/favorites', 'plans.favorite-plans-list')->name('plans.favorites');
 
     // Statistics routes
     Volt::route('statistics', 'statistics.couple-stats-dashboard')->name('statistics.index');
