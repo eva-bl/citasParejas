@@ -20,8 +20,12 @@ test('user can delete a plan', function () {
     $action = new DeletePlanAction();
     $result = $action->execute($user, $plan);
 
+    // Recuperar el plan incluyendo los soft-deleted
+    $deletedPlan = \App\Models\Plan::withTrashed()->find($plan->id);
+
     expect($result)->toBeTrue()
-        ->and($plan->fresh())->toBeNull()
-        ->and($plan->activityLog()->where('action', 'deleted')->exists())->toBeTrue();
+    ->and($deletedPlan)->not->toBeNull()
+    ->and($deletedPlan->deleted_at)->not->toBeNull()
+    ->and($plan->activityLog()->where('action', 'deleted')->exists())->toBeTrue();
 });
 
