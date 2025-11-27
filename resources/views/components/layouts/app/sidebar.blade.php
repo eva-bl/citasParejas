@@ -14,6 +14,7 @@
             toggle() {
                 this.collapsed = !this.collapsed;
                 localStorage.setItem('sidebarCollapsed', this.collapsed);
+                $dispatch('sidebar-toggled', { collapsed: this.collapsed });
             }
         }" 
         class="hidden lg:block fixed left-0 top-0 bottom-0 z-30">
@@ -288,6 +289,7 @@
 
         <!-- Main Content - Ajustado al sidebar fijo y header -->
         <div x-data="{ collapsed: localStorage.getItem('sidebarCollapsed') === 'true' }" 
+             @sidebar-toggled.window="collapsed = $event.detail.collapsed"
              :class="collapsed ? 'lg:ml-16' : 'lg:ml-64'"
              class="min-h-screen pt-16 transition-all duration-300">
             <main class="min-h-screen p-4 lg:p-6">
