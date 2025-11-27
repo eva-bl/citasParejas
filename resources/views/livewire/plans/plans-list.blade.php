@@ -12,6 +12,13 @@ new class extends Component
     public ?string $dateFrom = null;
     public ?string $dateTo = null;
     public ?int $createdByFilter = null;
+    public ?float $ratingMin = null;
+    public ?float $ratingMax = null;
+    public ?float $costMin = null;
+    public ?float $costMax = null;
+    public bool $onlyFavorites = false;
+    public bool $withoutRatings = false;
+    public bool $withoutPhotos = false;
     public string $search = '';
     public string $sortBy = 'date';
     public string $sortDirection = 'desc';
@@ -22,6 +29,13 @@ new class extends Component
         'dateFrom' => ['except' => ''],
         'dateTo' => ['except' => ''],
         'createdByFilter' => ['except' => ''],
+        'ratingMin' => ['except' => ''],
+        'ratingMax' => ['except' => ''],
+        'costMin' => ['except' => ''],
+        'costMax' => ['except' => ''],
+        'onlyFavorites' => ['except' => false],
+        'withoutRatings' => ['except' => false],
+        'withoutPhotos' => ['except' => false],
         'search' => ['except' => ''],
         'sortBy' => ['except' => 'date'],
         'sortDirection' => ['except' => 'desc'],
@@ -44,6 +58,13 @@ new class extends Component
         $this->dateFrom = null;
         $this->dateTo = null;
         $this->createdByFilter = null;
+        $this->ratingMin = null;
+        $this->ratingMax = null;
+        $this->costMin = null;
+        $this->costMax = null;
+        $this->onlyFavorites = false;
+        $this->withoutRatings = false;
+        $this->withoutPhotos = false;
         $this->search = '';
     }
 
@@ -85,6 +106,39 @@ new class extends Component
 
         if ($this->createdByFilter) {
             $query->where('created_by', $this->createdByFilter);
+        }
+
+        // Rating filters
+        if ($this->ratingMin !== null) {
+            $query->where('overall_avg', '>=', $this->ratingMin);
+        }
+        if ($this->ratingMax !== null) {
+            $query->where('overall_avg', '<=', $this->ratingMax);
+        }
+
+        // Cost filters
+        if ($this->costMin !== null) {
+            $query->where('cost', '>=', $this->costMin);
+        }
+        if ($this->costMax !== null) {
+            $query->where('cost', '<=', $this->costMax);
+        }
+
+        // Only favorites
+        if ($this->onlyFavorites) {
+            $query->whereHas('favoritedBy', function ($q) {
+                $q->where('user_id', auth()->id());
+            });
+        }
+
+        // Without ratings
+        if ($this->withoutRatings) {
+            $query->whereNull('overall_avg');
+        }
+
+        // Without photos
+        if ($this->withoutPhotos) {
+            $query->where('photos_count', 0);
         }
 
         // Sorting
