@@ -32,12 +32,11 @@
                  x-transition:enter-end="opacity-100 translate-y-0">
                 <h1 class="text-5xl md:text-7xl font-bold text-neutral-900 dark:text-white mb-6 leading-tight">
                     <span class="bg-gradient-to-r from-pink-600 via-purple-600 to-blue-600 bg-clip-text text-transparent">
-                        Valorar Planes en Pareja
+                        Crea, guarda y comparte cada momento especial en pareja
                     </span>
                 </h1>
                 <p class="text-xl md:text-2xl text-neutral-600 dark:text-neutral-400 mb-8 max-w-3xl mx-auto">
-                    Registra, valora y guarda los mejores momentos de tu relación. 
-                    Descubre qué planes disfrutan más juntos.
+                    Planea juntos, valorad vuestros momentos y descubrid nuevas ideas para disfrutar más vuestra relación.
                 </p>
                 <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
                     @auth
