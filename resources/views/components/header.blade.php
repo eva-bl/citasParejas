@@ -36,7 +36,7 @@
                          class="relative">
                         <button @click="open = !open" 
                                 class="flex items-center space-x-2 px-3 py-2 rounded-lg transition-all {{ $isHomePage ? 'hover:bg-white/20 text-white' : 'hover:bg-pink-50 text-neutral-700' }}">
-                            <span class="text-sm font-medium">{{ auth()->user()->name }}</span>
+                            <span class="text-sm font-medium {{ $isHomePage ? 'text-white' : 'text-neutral-700' }}">{{ auth()->user()->name }}</span>
                             <span class="relative flex h-8 w-8 shrink-0 overflow-hidden rounded-lg">
                                 <span class="flex h-full w-full items-center justify-center bg-gradient-to-br from-pink-500 to-purple-600 text-white text-xs font-semibold">
                                     {{ auth()->user()->initials() }}
