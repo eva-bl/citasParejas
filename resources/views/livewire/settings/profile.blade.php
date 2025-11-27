@@ -34,22 +34,11 @@ new class extends Component {
 
         $validated = $this->validate([
             'name' => ['required', 'string', 'max:255'],
-            'email' => [
-                'required',
-                'string',
-                'lowercase',
-                'email',
-                'max:255',
-                Rule::unique(User::class)->ignore($user->id)
-            ],
+            // Email is not editable, so we don't validate it
         ]);
 
         $user->fill($validated);
-
-        if ($user->isDirty('email')) {
-            $user->email_verified_at = null;
-        }
-
+        // Email is not editable, so we don't update it
         $user->save();
 
         $this->dispatch('profile-updated', name: $user->name);
@@ -238,9 +227,10 @@ new class extends Component {
                 </label>
                 <input wire:model="email" 
                        type="email" 
-                       required 
+                       readonly
+                       disabled
                        autocomplete="email"
-                       class="w-full px-4 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-purple-700">
+                       class="w-full px-4 py-2 border border-neutral-300 rounded-lg bg-neutral-100 text-purple-700 cursor-not-allowed">
 
                 @if (auth()->user() instanceof \Illuminate\Contracts\Auth\MustVerifyEmail && !auth()->user()->hasVerifiedEmail())
                     <div class="mt-4">
