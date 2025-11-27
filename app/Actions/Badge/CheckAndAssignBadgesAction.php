@@ -4,9 +4,9 @@ namespace App\Actions\Badge;
 
 use App\Models\Badge;
 use App\Models\User;
+use App\Notifications\BadgeEarnedNotification;
 use App\Services\BadgeEvaluationService;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Notification;
 
 class CheckAndAssignBadgesAction
 {
@@ -45,6 +45,9 @@ class CheckAndAssignBadgesAction
                     ]);
                     
                     $newlyAssignedBadges[] = $badge;
+                    
+                    // Notificar al usuario
+                    $user->notify(new BadgeEarnedNotification($badge));
                 });
             }
         }

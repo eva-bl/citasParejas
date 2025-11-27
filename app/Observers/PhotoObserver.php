@@ -3,6 +3,7 @@
 namespace App\Observers;
 
 use App\Models\Photo;
+use App\Notifications\PhotosUploadedNotification;
 
 class PhotoObserver
 {
@@ -13,6 +14,10 @@ class PhotoObserver
     {
         // Update photos_count in plan
         $photo->plan->increment('photos_count');
+        
+        // Notificar a la pareja (excepto al que subió)
+        // Nota: La notificación se enviará desde UploadPlanPhotosAction después de subir todas las fotos
+        // para evitar múltiples notificaciones
     }
 
     /**

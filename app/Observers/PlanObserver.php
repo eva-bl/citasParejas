@@ -4,6 +4,7 @@ namespace App\Observers;
 
 use App\Jobs\EvaluateUserBadgesJob;
 use App\Models\Plan;
+use App\Notifications\PlanCreatedNotification;
 use App\Services\StatisticsService;
 
 class PlanObserver
@@ -18,6 +19,14 @@ class PlanObserver
     public function created(Plan $plan): void
     {
         $this->invalidateCache($plan);
+        
+        // Notificar a la pareja (excepto al creador)
+        if ($plan->couple && $plan->createdBy) {
+            $partner = $plan->couple->users()->where('id', '!=', $plan->created_by)->first();
+            if ($partner) {
+                $partner->notify(new PlanCreatedNotification($plan));
+            }
+        }
     }
 
     /**

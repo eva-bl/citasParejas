@@ -4,6 +4,7 @@ namespace App\Actions\Photo;
 
 use App\Models\Plan;
 use App\Models\Photo;
+use App\Notifications\PhotosUploadedNotification;
 use App\Services\ImageProcessingService;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
@@ -73,6 +74,14 @@ class UploadPlanPhotosAction
                 ]);
                 
                 $uploadedPhotos[] = $photo;
+            }
+            
+            // Notify partner (except uploader)
+            if ($plan->couple && $plan->createdBy) {
+                $partner = $plan->couple->users()->where('id', '!=', auth()->id())->first();
+                if ($partner) {
+                    $partner->notify(new PhotosUploadedNotification($plan, count($uploadedPhotos)));
+                }
             }
             
             return $uploadedPhotos;

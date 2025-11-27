@@ -5,6 +5,7 @@ namespace App\Observers;
 use App\Actions\Rating\CalculatePlanAveragesAction;
 use App\Jobs\EvaluateUserBadgesJob;
 use App\Models\Rating;
+use App\Notifications\PlanRatedNotification;
 use App\Services\StatisticsService;
 
 class RatingObserver
@@ -22,6 +23,11 @@ class RatingObserver
         $this->calculateAverages->execute($rating->plan);
         $this->invalidateStatisticsCache($rating);
         $this->evaluateBadges($rating);
+        
+        // Notificar al creador del plan (si no es quien valora)
+        if ($rating->plan && $rating->plan->createdBy && $rating->plan->created_by !== $rating->user_id) {
+            $rating->plan->createdBy->notify(new PlanRatedNotification($rating->plan, $rating));
+        }
     }
 
     /**
