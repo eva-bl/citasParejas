@@ -8,31 +8,49 @@
         <!-- Header -->
         <x-header />
         
-        <!-- Desktop Sidebar - Fija, Estrecha y Desplegable -->
+        <!-- Desktop Sidebar - Desplegable -->
         <div x-data="{ 
-            collapsed: localStorage.getItem('sidebarCollapsed') === 'true',
+            open: false,
+            collapsed: true,
+            init() {
+                // Escuchar evento desde el header
+                this.$watch('open', (value) => {
+                    if (value) {
+                        this.collapsed = false;
+                    }
+                });
+            },
             toggle() {
-                this.collapsed = !this.collapsed;
-                localStorage.setItem('sidebarCollapsed', this.collapsed);
-                $dispatch('sidebar-toggled', { collapsed: this.collapsed });
+                this.open = !this.open;
+                if (!this.open) {
+                    this.collapsed = true;
+                }
+            },
+            close() {
+                this.open = false;
+                this.collapsed = true;
             }
         }" 
+        @toggle-sidebar.window="toggle()"
         class="hidden lg:block fixed left-0 top-0 bottom-0 z-30">
-            <aside :class="collapsed ? 'w-16' : 'w-64'" 
-                   class="flex fixed left-0 top-0 bottom-0 flex-col border-r border-pink-200/50 bg-white transition-all duration-300">
+            <!-- Overlay -->
+            <div x-show="open" 
+                 @click="close()"
+                 x-transition:enter="transition-opacity ease-linear duration-300"
+                 x-transition:enter-start="opacity-0"
+                 x-transition:enter-end="opacity-100"
+                 x-transition:leave="transition-opacity ease-linear duration-300"
+                 x-transition:leave-start="opacity-100"
+                 x-transition:leave-end="opacity-0"
+                 class="fixed inset-0 bg-black/50 z-40"
+                 style="display: none;"></div>
+            
+            <aside :class="open ? 'w-64' : 'w-0'" 
+                   class="flex fixed left-0 top-0 bottom-0 flex-col border-r border-pink-200/50 bg-white transition-all duration-300 overflow-hidden z-50">
                 <div class="flex flex-col h-full p-2">
-                    <!-- Toggle Button -->
+                    <!-- Header del Sidebar -->
                     <div class="flex items-center justify-between mb-4 pt-2">
-                        <button @click="toggle()" 
-                                class="flex items-center justify-center w-10 h-10 rounded-lg hover:bg-pink-50 transition-all"
-                                title="{{ __('Colapsar/Expandir menú') }}">
-                            <svg class="w-5 h-5 text-neutral-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-                            </svg>
-                        </button>
                         <a href="{{ route('dashboard') }}" 
-                           x-show="!collapsed"
-                           x-transition
                            class="flex items-center space-x-2 hover:opacity-80 transition-opacity" 
                            wire:navigate
                            title="Dashboard">
@@ -41,76 +59,77 @@
                             </div>
                             <span class="text-lg font-bold text-neutral-900">Citas</span>
                         </a>
+                        <button @click="close()" 
+                                class="flex items-center justify-center w-8 h-8 rounded-lg hover:bg-pink-50 transition-all"
+                                title="{{ __('Cerrar menú') }}">
+                            <svg class="w-5 h-5 text-neutral-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
                     </div>
 
                     <!-- Navigation -->
                     <nav class="flex-1 space-y-1">
                         <a href="{{ route('dashboard') }}" 
-                           :class="collapsed ? 'justify-center' : 'justify-start px-3'"
-                           class="flex items-center w-full h-10 rounded-lg hover:bg-pink-50 transition-all {{ request()->routeIs('dashboard') ? 'bg-pink-50 text-pink-600' : 'text-neutral-700' }}"
+                           class="flex items-center justify-start px-3 w-full h-10 rounded-lg hover:bg-pink-50 transition-all {{ request()->routeIs('dashboard') ? 'bg-pink-50 text-pink-600' : 'text-neutral-700' }}"
                            wire:navigate
                            title="Dashboard">
                             <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
                             </svg>
-                            <span x-show="!collapsed" x-transition class="ml-3 font-medium">{{ __('Dashboard') }}</span>
+                            <span class="ml-3 font-medium">{{ __('Dashboard') }}</span>
                         </a>
                         
                         @auth
                         @if(auth()->user()->hasCouple())
                             <a href="{{ route('plans.index') }}" 
-                               :class="collapsed ? 'justify-center' : 'justify-start px-3'"
-                               class="flex items-center w-full h-10 rounded-lg hover:bg-pink-50 transition-all {{ request()->routeIs('plans.index') ? 'bg-pink-50 text-pink-600' : 'text-neutral-700' }}"
+                               class="flex items-center justify-start px-3 w-full h-10 rounded-lg hover:bg-pink-50 transition-all {{ request()->routeIs('plans.index') ? 'bg-pink-50 text-pink-600' : 'text-neutral-700' }}"
                                wire:navigate
                                title="Mis Planes">
                                 <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                                 </svg>
-                                <span x-show="!collapsed" x-transition class="ml-3 font-medium">{{ __('Mis Planes') }}</span>
+                                <span class="ml-3 font-medium">{{ __('Mis Planes') }}</span>
                             </a>
                             
                             <a href="{{ route('plans.calendar') }}" 
-                               :class="collapsed ? 'justify-center' : 'justify-start px-3'"
-                               class="flex items-center w-full h-10 rounded-lg hover:bg-pink-50 transition-all {{ request()->routeIs('plans.calendar') ? 'bg-pink-50 text-pink-600' : 'text-neutral-700' }}"
+                               class="flex items-center justify-start px-3 w-full h-10 rounded-lg hover:bg-pink-50 transition-all {{ request()->routeIs('plans.calendar') ? 'bg-pink-50 text-pink-600' : 'text-neutral-700' }}"
                                wire:navigate
                                title="Calendario">
                                 <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                                 </svg>
-                                <span x-show="!collapsed" x-transition class="ml-3 font-medium">{{ __('Calendario') }}</span>
+                                <span class="ml-3 font-medium">{{ __('Calendario') }}</span>
                             </a>
                             
                             <a href="{{ route('plans.favorites') }}" 
-                               :class="collapsed ? 'justify-center' : 'justify-start px-3'"
-                               class="flex items-center w-full h-10 rounded-lg hover:bg-pink-50 transition-all {{ request()->routeIs('plans.favorites') ? 'bg-pink-50 text-pink-600' : 'text-neutral-700' }}"
+                               class="flex items-center justify-start px-3 w-full h-10 rounded-lg hover:bg-pink-50 transition-all {{ request()->routeIs('plans.favorites') ? 'bg-pink-50 text-pink-600' : 'text-neutral-700' }}"
                                wire:navigate
                                title="Favoritos">
                                 <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
                                 </svg>
-                                <span x-show="!collapsed" x-transition class="ml-3 font-medium">{{ __('Favoritos') }}</span>
+                                <span class="ml-3 font-medium">{{ __('Favoritos') }}</span>
                             </a>
                             
                             <a href="{{ route('statistics.index') }}" 
-                               :class="collapsed ? 'justify-center' : 'justify-start px-3'"
-                               class="flex items-center w-full h-10 rounded-lg hover:bg-pink-50 transition-all {{ request()->routeIs('statistics.*') ? 'bg-pink-50 text-pink-600' : 'text-neutral-700' }}"
+                               class="flex items-center justify-start px-3 w-full h-10 rounded-lg hover:bg-pink-50 transition-all {{ request()->routeIs('statistics.*') ? 'bg-pink-50 text-pink-600' : 'text-neutral-700' }}"
                                wire:navigate
                                title="Estadísticas">
                                 <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
                                 </svg>
-                                <span x-show="!collapsed" x-transition class="ml-3 font-medium">{{ __('Estadísticas') }}</span>
+                                <span class="ml-3 font-medium">{{ __('Estadísticas') }}</span>
                             </a>
                             
                             <a href="{{ route('badges.index') }}" 
-                               :class="collapsed ? 'justify-center' : 'justify-start px-3'"
-                               class="flex items-center w-full h-10 rounded-lg hover:bg-pink-50 transition-all {{ request()->routeIs('badges.*') ? 'bg-pink-50 text-pink-600' : 'text-neutral-700' }}"
+                               class="flex items-center justify-start px-3 w-full h-10 rounded-lg hover:bg-pink-50 transition-all {{ request()->routeIs('badges.*') ? 'bg-pink-50 text-pink-600' : 'text-neutral-700' }}"
                                wire:navigate
                                title="Insignias">
                                 <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
                                 </svg>
-                                <span x-show="!collapsed" x-transition class="ml-3 font-medium">{{ __('Insignias') }}</span>
+                                <span class="ml-3 font-medium">{{ __('Insignias') }}</span>
                             </a>
                         @endif
                     @endauth
@@ -125,21 +144,20 @@
                     <div class="pt-2 border-t border-pink-200/50">
                         <div x-data="{ open: false }" class="relative">
                             <button @click="open = !open" 
-                                    :class="collapsed ? 'justify-center w-10' : 'justify-start px-3 w-full'"
-                                    class="flex items-center h-10 rounded-lg hover:bg-pink-50 transition-all"
+                                    class="flex items-center justify-start px-3 w-full h-10 rounded-lg hover:bg-pink-50 transition-all"
                                     title="{{ auth()->user()->name }}">
                                 <span class="relative flex h-8 w-8 shrink-0 overflow-hidden rounded-lg">
                                     <span class="flex h-full w-full items-center justify-center bg-gradient-to-br from-pink-500 to-purple-600 text-white text-xs font-semibold">
                                         {{ auth()->user()->initials() }}
                                     </span>
                                 </span>
-                                <div x-show="!collapsed" x-transition class="ml-3 flex-1 text-start text-sm leading-tight">
+                                <div class="ml-3 flex-1 text-start text-sm leading-tight">
                                     <span class="truncate font-semibold text-neutral-900 block">{{ auth()->user()->name }}</span>
                                     <span class="truncate text-xs text-neutral-600 block">{{ auth()->user()->email }}</span>
                                 </div>
                             </button>
 
-                            <div x-show="open && !collapsed" 
+                            <div x-show="open" 
                                  @click.away="open = false"
                                  x-transition
                                  class="absolute bottom-full left-0 mb-2 w-64 bg-white border border-pink-200/50 shadow-xl rounded-xl overflow-hidden z-50">
@@ -287,11 +305,8 @@
             </aside>
         </div>
 
-        <!-- Main Content - Ajustado al sidebar fijo y header -->
-        <div x-data="{ collapsed: localStorage.getItem('sidebarCollapsed') === 'true' }" 
-             @sidebar-toggled.window="collapsed = $event.detail.collapsed"
-             :class="collapsed ? 'lg:ml-16' : 'lg:ml-64'"
-             class="min-h-screen pt-16 transition-all duration-300">
+        <!-- Main Content - Ajustado al header -->
+        <div class="min-h-screen pt-16">
             <main class="min-h-screen p-4 lg:p-6">
                 {{ $slot }}
             </main>
