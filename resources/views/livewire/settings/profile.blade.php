@@ -298,54 +298,54 @@ new class extends Component {
                     <label class="block text-sm font-medium text-purple-600 mb-2">
                         {{ __('Nombre') }}
                     </label>
-                <input wire:model="name" 
-                       type="text" 
-                       required 
-                       autofocus 
-                       autocomplete="name"
-                       class="w-full px-4 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-purple-700">
-            </div>
+                    <input wire:model="name" 
+                           type="text" 
+                           required 
+                           autofocus 
+                           autocomplete="name"
+                           class="w-full px-4 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-purple-700">
+                </div>
 
-            <div>
-                <label class="block text-sm font-medium text-purple-600 mb-2">
-                    {{ __('Correo electrónico') }}
-                </label>
-                <input wire:model="email" 
-                       type="email" 
-                       readonly
-                       disabled
-                       autocomplete="email"
-                       class="w-full px-4 py-2 border border-neutral-300 rounded-lg bg-neutral-100 text-purple-700 cursor-not-allowed">
+                <div>
+                    <label class="block text-sm font-medium text-purple-600 mb-2">
+                        {{ __('Correo electrónico') }}
+                    </label>
+                    <input wire:model="email" 
+                           type="email" 
+                           readonly
+                           disabled
+                           autocomplete="email"
+                           class="w-full px-4 py-2 border border-neutral-300 rounded-lg bg-neutral-100 text-purple-700 cursor-not-allowed">
 
-                @if (auth()->user() instanceof \Illuminate\Contracts\Auth\MustVerifyEmail && !auth()->user()->hasVerifiedEmail())
-                    <div class="mt-4">
-                        <p class="text-sm text-purple-600">
-                            {{ __('Tu dirección de correo electrónico no está verificada.') }}
-                            <button type="button" 
-                                    wire:click.prevent="resendVerificationNotification"
-                                    class="text-sm font-semibold text-purple-700 hover:text-purple-800 hover:underline">
-                                {{ __('Haz clic aquí para reenviar el correo de verificación.') }}
-                            </button>
-                        </p>
-
-                        @if (session('status') === 'verification-link-sent')
-                            <p class="mt-2 text-sm font-medium text-green-600">
-                                {{ __('Se ha enviado un nuevo enlace de verificación a tu dirección de correo electrónico.') }}
+                    @if (auth()->user() instanceof \Illuminate\Contracts\Auth\MustVerifyEmail && !auth()->user()->hasVerifiedEmail())
+                        <div class="mt-4">
+                            <p class="text-sm text-purple-600">
+                                {{ __('Tu dirección de correo electrónico no está verificada.') }}
+                                <button type="button" 
+                                        wire:click.prevent="resendVerificationNotification"
+                                        class="text-sm font-semibold text-purple-700 hover:text-purple-800 hover:underline">
+                                    {{ __('Haz clic aquí para reenviar el correo de verificación.') }}
+                                </button>
                             </p>
-                        @endif
-                    </div>
-                @endif
-            </div>
 
-            <div>
-                <label class="block text-sm font-medium text-purple-600 mb-2">
-                    {{ __('Apodo') }}
-                </label>
-                <input wire:model="nickname" 
-                       type="text" 
-                       autocomplete="nickname"
-                       placeholder="{{ __('Opcional') }}"
-                       class="w-full px-4 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-purple-700">
+                            @if (session('status') === 'verification-link-sent')
+                                <p class="mt-2 text-sm font-medium text-green-600">
+                                    {{ __('Se ha enviado un nuevo enlace de verificación a tu dirección de correo electrónico.') }}
+                                </p>
+                            @endif
+                        </div>
+                    @endif
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-purple-600 mb-2">
+                        {{ __('Apodo') }}
+                    </label>
+                    <input wire:model="nickname" 
+                           type="text" 
+                           autocomplete="nickname"
+                           placeholder="{{ __('Opcional') }}"
+                           class="w-full px-4 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-purple-700">
                     <p class="mt-1 text-xs text-neutral-500">{{ __('Un apodo o alias que te identifique') }}</p>
                 </div>
 
