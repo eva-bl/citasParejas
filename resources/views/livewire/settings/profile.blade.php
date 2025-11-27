@@ -209,7 +209,7 @@ new class extends Component {
 
         <form wire:submit="updateProfileInformation" class="my-6 w-full space-y-6">
             <div>
-                <label class="block text-sm font-medium bg-gradient-to-r from-pink-600 via-purple-600 to-blue-600 bg-clip-text text-transparent mb-2">
+                <label class="block text-sm font-medium text-purple-600 mb-2">
                     {{ __('Nombre') }}
                 </label>
                 <input wire:model="name" 
@@ -217,26 +217,26 @@ new class extends Component {
                        required 
                        autofocus 
                        autocomplete="name"
-                       class="w-full px-4 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent">
+                       class="w-full px-4 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-purple-700">
             </div>
 
             <div>
-                <label class="block text-sm font-medium bg-gradient-to-r from-pink-600 via-purple-600 to-blue-600 bg-clip-text text-transparent mb-2">
+                <label class="block text-sm font-medium text-purple-600 mb-2">
                     {{ __('Correo electrónico') }}
                 </label>
                 <input wire:model="email" 
                        type="email" 
                        required 
                        autocomplete="email"
-                       class="w-full px-4 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent">
+                       class="w-full px-4 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-purple-700">
 
                 @if (auth()->user() instanceof \Illuminate\Contracts\Auth\MustVerifyEmail && !auth()->user()->hasVerifiedEmail())
                     <div class="mt-4">
-                        <p class="text-sm bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 bg-clip-text text-transparent">
+                        <p class="text-sm text-purple-600">
                             {{ __('Tu dirección de correo electrónico no está verificada.') }}
                             <button type="button" 
                                     wire:click.prevent="resendVerificationNotification"
-                                    class="text-sm font-semibold bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent hover:underline">
+                                    class="text-sm font-semibold text-purple-700 hover:text-purple-800 hover:underline">
                                 {{ __('Haz clic aquí para reenviar el correo de verificación.') }}
                             </button>
                         </p>
@@ -252,12 +252,12 @@ new class extends Component {
 
             <div class="flex items-center gap-4">
                 <button type="submit" 
-                        class="px-6 py-2 bg-gradient-to-r from-pink-500 to-purple-600 text-white rounded-lg font-medium hover:shadow-lg transform hover:scale-105 transition-all duration-200"
+                        class="px-6 py-2 bg-purple-600 text-white rounded-lg font-medium hover:bg-purple-700 hover:shadow-lg transform hover:scale-105 transition-all duration-200"
                         data-test="update-profile-button">
                     {{ __('Guardar') }}
                 </button>
 
-                <x-action-message class="me-3 bg-gradient-to-r from-green-500 to-emerald-600 bg-clip-text text-transparent font-medium" on="profile-updated">
+                <x-action-message class="me-3 text-purple-600 font-medium" on="profile-updated">
                     {{ __('Guardado.') }}
                 </x-action-message>
             </div>
