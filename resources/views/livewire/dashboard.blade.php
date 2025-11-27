@@ -295,6 +295,68 @@ new class extends Component
                     @endif
                 </div>
             </div>
+
+            <!-- Plan del Año -->
+            @if($planOfTheYear)
+                <div class="mt-6 relative overflow-hidden rounded-3xl bg-gradient-to-br from-yellow-400 via-orange-500 to-pink-600 p-8 md:p-12 shadow-2xl"
+                     x-data="{ 
+                         show: false,
+                         init() {
+                             setTimeout(() => this.show = true, 500);
+                         }
+                     }"
+                     x-show="show"
+                     x-transition:enter="transition ease-out duration-1000"
+                     x-transition:enter-start="opacity-0 translate-y-4"
+                     x-transition:enter-end="opacity-100 translate-y-0">
+                    <div class="relative z-10">
+                        <div class="flex items-center gap-4 mb-4">
+                            <div class="w-20 h-20 bg-white/30 backdrop-blur-md rounded-2xl flex items-center justify-center shadow-lg">
+                                <span class="text-5xl">⭐</span>
+                            </div>
+                            <div>
+                                <h2 class="text-3xl md:text-4xl font-bold text-white mb-2">{{ __('Plan Estrella del Año') }}</h2>
+                                <p class="text-white/90 text-lg">{{ __('Tu mejor plan de') }} {{ now()->year }}</p>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-white/20 backdrop-blur-md rounded-2xl p-6 border border-white/30">
+                            <div class="flex items-center gap-4 mb-4">
+                                <span class="text-4xl">{{ $planOfTheYear->category->icon ?? '📅' }}</span>
+                                <div class="flex-1">
+                                    <h3 class="text-2xl font-bold text-white mb-1">{{ $planOfTheYear->title }}</h3>
+                                    <p class="text-white/80">{{ $planOfTheYear->date->format('d/m/Y') }}</p>
+                                </div>
+                                <div class="text-right">
+                                    <div class="text-4xl font-bold text-white mb-1">{{ number_format($planOfTheYear->overall_avg, 1) }}/5</div>
+                                    <div class="flex justify-end">
+                                        @for($i = 1; $i <= 5; $i++)
+                                            <span class="text-yellow-200 text-2xl">{{ $i <= round($planOfTheYear->overall_avg) ? '★' : '☆' }}</span>
+                                        @endfor
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            @if($planOfTheYear->location)
+                                <p class="text-white/90 mb-3">📍 {{ $planOfTheYear->location }}</p>
+                            @endif
+                            
+                            <a href="{{ route('plans.show', $planOfTheYear) }}" 
+                               wire:navigate
+                               class="inline-flex items-center gap-2 px-6 py-3 bg-white text-pink-600 rounded-xl hover:shadow-xl transition-all font-semibold">
+                                {{ __('Ver Detalles') }}
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                                </svg>
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <!-- Decorative elements -->
+                    <div class="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl -mr-32 -mt-32"></div>
+                    <div class="absolute bottom-0 left-0 w-48 h-48 bg-yellow-300/20 rounded-full blur-2xl -ml-24 -mb-24"></div>
+                </div>
+            @endif
         </div>
     </x-layouts.app>
 </div>
