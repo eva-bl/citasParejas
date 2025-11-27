@@ -137,8 +137,28 @@ new class extends Component {
      */
     public function uploadAvatar(): void
     {
+        // Validar que sea un archivo
+        if (!$this->avatar) {
+            session()->flash('avatar-error', __('Por favor, selecciona un archivo.'));
+            return;
+        }
+
+        // Validar extensión del archivo
+        $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+        $extension = strtolower($this->avatar->getClientOriginalExtension());
+        
+        if (!in_array($extension, $allowedExtensions)) {
+            session()->flash('avatar-error', __('El archivo debe ser una imagen válida (.jpg, .jpeg, .png, .gif o .webp).'));
+            $this->avatar = null;
+            return;
+        }
+
+        // Validar que sea realmente una imagen
         $this->validate([
             'avatar' => ['required', 'image', 'max:2048'], // 2MB max
+        ], [
+            'avatar.image' => __('El archivo debe ser una imagen válida (.jpg, .jpeg, .png, .gif o .webp).'),
+            'avatar.max' => __('La imagen no puede ser mayor de 2MB.'),
         ]);
 
         $user = Auth::user();
@@ -159,8 +179,9 @@ new class extends Component {
         $this->avatar = null;
         $this->showAvatarMenu = false;
         
-        // Refresh the component to show the new avatar
+        // Force component refresh
         $this->dispatch('avatar-updated');
+        $this->dispatch('$refresh');
     }
 
     /**
@@ -205,14 +226,28 @@ new class extends Component {
     <x-settings.layout>
         <!-- Card Container -->
         <div class="max-w-3xl mx-auto bg-white/60 backdrop-blur-xl shadow-lg rounded-2xl p-8 space-y-6">
+            <!-- Mensaje de error -->
+            @if(session('avatar-error'))
+                <div class="p-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-600">
+                    {{ session('avatar-error') }}
+                </div>
+            @endif
+
             <!-- Avatar and Name Section -->
             <div class="flex items-center gap-6">
-                <div class="relative group flex-shrink-0">
+                <div class="relative group flex-shrink-0"
+                     x-data="{ 
+                         refreshAvatar() {
+                             $wire.$refresh();
+                         }
+                     }"
+                     @avatar-updated.window="refreshAvatar()"
+                     wire:key="avatar-{{ auth()->user()->id }}-{{ auth()->user()->avatar_path }}">
                     @php
                         $user = auth()->user()->fresh();
                     @endphp
                     @if($user->hasAvatar())
-                        <img src="{{ $user->avatar_url }}" 
+                        <img src="{{ $user->avatar_url }}?v={{ time() }}" 
                              alt="{{ $user->name }}" 
                              class="w-32 h-32 rounded-full object-cover border-4 border-white shadow-lg">
                     @else
@@ -220,7 +255,7 @@ new class extends Component {
                             {{ $user->initials() }}
                         </div>
                     @endif
-                    
+
                     <!-- Edit Button -->
                     <div x-data="{ open: false }" class="absolute bottom-0 right-0">
                         <button @click="open = !open" 
@@ -243,7 +278,7 @@ new class extends Component {
                              class="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-lg ring-1 ring-black ring-opacity-5 z-50"
                              style="display: none;">
                             <div class="py-1" role="menu">
-                                <!-- Upload Photo -->
+                                <!-- Elegir desde galería -->
                                 <label class="flex items-center gap-3 px-4 py-2 text-sm text-neutral-700 hover:bg-pink-50 hover:text-pink-600 transition-colors cursor-pointer" role="menuitem">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
@@ -251,25 +286,12 @@ new class extends Component {
                                     <span>{{ __('Elegir desde galería') }}</span>
                                     <input type="file" 
                                            wire:model="avatar" 
-                                           accept="image/*" 
+                                           accept="image/jpeg,image/jpg,image/png,image/gif,image/webp" 
                                            class="hidden"
                                            @change="$wire.uploadAvatar()">
                                 </label>
 
-                                <!-- Upload Photo File -->
-                                <label class="flex items-center gap-3 px-4 py-2 text-sm text-neutral-700 hover:bg-pink-50 hover:text-pink-600 transition-colors cursor-pointer" role="menuitem">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
-                                    </svg>
-                                    <span>{{ __('Subir foto') }}</span>
-                                    <input type="file" 
-                                           wire:model="avatar" 
-                                           accept="image/*" 
-                                           class="hidden"
-                                           @change="$wire.uploadAvatar()">
-                                </label>
-
-                                <!-- Choose Avatar -->
+                                <!-- Elegir Avatar -->
                                 <button @click="open = false; $wire.showAvatarMenu = true" 
                                         class="w-full flex items-center gap-3 px-4 py-2 text-sm text-neutral-700 hover:bg-pink-50 hover:text-pink-600 transition-colors text-left" 
                                         role="menuitem">
@@ -287,7 +309,7 @@ new class extends Component {
                                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                                         </svg>
-                                        <span>{{ __('Quitar foto de perfil') }}</span>
+                                        <span>{{ __('Quitar foto') }}</span>
                                     </button>
                                 @endif
                             </div>
