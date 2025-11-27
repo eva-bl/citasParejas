@@ -26,6 +26,9 @@ class User extends Authenticatable
         'couple_id',
         'avatar_path',
         'is_admin',
+        'nickname',
+        'timezone',
+        'locale',
     ];
 
     /**

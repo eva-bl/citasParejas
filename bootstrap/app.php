@@ -14,6 +14,11 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'couple' => \App\Http\Middleware\EnsureUserHasCouple::class,
         ]);
+        
+        // Apply user locale and timezone for authenticated users
+        $middleware->web(append: [
+            \App\Http\Middleware\SetUserLocaleAndTimezone::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

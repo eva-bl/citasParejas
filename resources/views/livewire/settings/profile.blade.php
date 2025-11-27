@@ -13,16 +13,82 @@ new class extends Component {
 
     public string $name = '';
     public string $email = '';
+    public ?string $nickname = null;
+    public string $timezone = 'UTC';
+    public string $locale = 'es';
     public $avatar = null;
     public $showAvatarMenu = false;
+
+    /**
+     * Get timezones for the select
+     */
+    public function getTimezonesProperty(): array
+    {
+        $timezones = [];
+        $identifiers = timezone_identifiers_list();
+        
+        foreach ($identifiers as $timezone) {
+            try {
+                $offset = (new \DateTime('now', new \DateTimeZone($timezone)))->getOffset();
+                $hours = intval($offset / 3600);
+                $minutes = abs(($offset % 3600) / 60);
+                $offsetString = sprintf('%+03d:%02d', $hours, $minutes);
+                $timezones[$timezone] = "{$timezone} (UTC{$offsetString})";
+            } catch (\Exception $e) {
+                // Skip invalid timezones
+                continue;
+            }
+        }
+        
+        return $timezones;
+    }
+
+    /**
+     * Get locales for the select
+     */
+    public function getLocalesProperty(): array
+    {
+        return [
+            'es' => ['name' => 'Español', 'flag' => '🇪🇸'],
+            'en' => ['name' => 'English', 'flag' => '🇬🇧'],
+            'fr' => ['name' => 'Français', 'flag' => '🇫🇷'],
+            'de' => ['name' => 'Deutsch', 'flag' => '🇩🇪'],
+            'it' => ['name' => 'Italiano', 'flag' => '🇮🇹'],
+            'pt' => ['name' => 'Português', 'flag' => '🇵🇹'],
+            'ru' => ['name' => 'Русский', 'flag' => '🇷🇺'],
+            'zh' => ['name' => '中文', 'flag' => '🇨🇳'],
+            'ja' => ['name' => '日本語', 'flag' => '🇯🇵'],
+            'ko' => ['name' => '한국어', 'flag' => '🇰🇷'],
+            'ar' => ['name' => 'العربية', 'flag' => '🇸🇦'],
+            'nl' => ['name' => 'Nederlands', 'flag' => '🇳🇱'],
+            'pl' => ['name' => 'Polski', 'flag' => '🇵🇱'],
+            'sv' => ['name' => 'Svenska', 'flag' => '🇸🇪'],
+            'da' => ['name' => 'Dansk', 'flag' => '🇩🇰'],
+            'no' => ['name' => 'Norsk', 'flag' => '🇳🇴'],
+            'fi' => ['name' => 'Suomi', 'flag' => '🇫🇮'],
+            'cs' => ['name' => 'Čeština', 'flag' => '🇨🇿'],
+            'tr' => ['name' => 'Türkçe', 'flag' => '🇹🇷'],
+            'el' => ['name' => 'Ελληνικά', 'flag' => '🇬🇷'],
+            'he' => ['name' => 'עברית', 'flag' => '🇮🇱'],
+            'hi' => ['name' => 'हिन्दी', 'flag' => '🇮🇳'],
+            'th' => ['name' => 'ไทย', 'flag' => '🇹🇭'],
+            'vi' => ['name' => 'Tiếng Việt', 'flag' => '🇻🇳'],
+            'id' => ['name' => 'Bahasa Indonesia', 'flag' => '🇮🇩'],
+            'ms' => ['name' => 'Bahasa Melayu', 'flag' => '🇲🇾'],
+        ];
+    }
 
     /**
      * Mount the component.
      */
     public function mount(): void
     {
-        $this->name = Auth::user()->name;
-        $this->email = Auth::user()->email;
+        $user = Auth::user();
+        $this->name = $user->name;
+        $this->email = $user->email;
+        $this->nickname = $user->nickname;
+        $this->timezone = $user->timezone ?? 'UTC';
+        $this->locale = $user->locale ?? 'es';
     }
 
     /**
@@ -34,12 +100,23 @@ new class extends Component {
 
         $validated = $this->validate([
             'name' => ['required', 'string', 'max:255'],
+            'nickname' => ['nullable', 'string', 'max:255'],
+            'timezone' => ['required', 'string', 'max:255'],
+            'locale' => ['required', 'string', 'max:10'],
             // Email is not editable, so we don't validate it
         ]);
 
-        $user->fill($validated);
-        // Email is not editable, so we don't update it
+        // Update only allowed fields (exclude email)
+        $user->name = $validated['name'];
+        $user->nickname = $validated['nickname'] ?? null;
+        $user->timezone = $validated['timezone'];
+        $user->locale = $validated['locale'];
         $user->save();
+
+        // Update session locale and timezone
+        Session::put('locale', $this->locale);
+        app()->setLocale($this->locale);
+        date_default_timezone_set($this->timezone);
 
         $this->dispatch('profile-updated', name: $user->name);
     }
@@ -110,6 +187,7 @@ new class extends Component {
         $user->sendEmailVerificationNotification();
         Session::flash('status', 'verification-link-sent');
     }
+
 }; ?>
 
 <section class="w-full bg-white min-h-screen">
@@ -250,6 +328,44 @@ new class extends Component {
                         @endif
                     </div>
                 @endif
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-purple-600 mb-2">
+                    {{ __('Apodo') }}
+                </label>
+                <input wire:model="nickname" 
+                       type="text" 
+                       autocomplete="nickname"
+                       placeholder="{{ __('Opcional') }}"
+                       class="w-full px-4 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-purple-700">
+                <p class="mt-1 text-xs text-neutral-500">{{ __('Un apodo o alias que te identifique') }}</p>
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-purple-600 mb-2">
+                    {{ __('Zona horaria') }}
+                </label>
+                <select wire:model="timezone" 
+                        class="w-full px-4 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-purple-700 bg-white">
+                    @foreach($this->timezones as $tz => $label)
+                        <option value="{{ $tz }}">{{ $label }}</option>
+                    @endforeach
+                </select>
+                <p class="mt-1 text-xs text-neutral-500">{{ __('La aplicación se adaptará a esta zona horaria') }}</p>
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-purple-600 mb-2">
+                    {{ __('Idioma') }}
+                </label>
+                <select wire:model="locale" 
+                        class="w-full px-4 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-purple-700 bg-white">
+                    @foreach($this->locales as $loc => $data)
+                        <option value="{{ $loc }}">{{ $data['flag'] }} {{ $data['name'] }}</option>
+                    @endforeach
+                </select>
+                <p class="mt-1 text-xs text-neutral-500">{{ __('La aplicación se traducirá a este idioma') }}</p>
             </div>
 
             <div class="flex items-center gap-4">
