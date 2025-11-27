@@ -39,7 +39,7 @@
                         {{ __('Iniciar Sesión') }}
                     </a>
                     @if (Route::has('register'))
-                        <a href="{{ route('register') }}" class="px-4 py-2 {{ $isHomePage ? 'bg-white text-pink-600 hover:bg-white/90' : 'bg-gradient-to-r from-pink-500 to-purple-600 text-white' }} rounded-lg text-sm font-medium hover:shadow-lg transform hover:scale-105 transition-all duration-200">
+                        <a href="{{ route('register') }}" class="px-4 py-2 {{ $isHomePage ? 'bg-white/20 backdrop-blur-sm border border-white/50 text-white hover:bg-white/30' : 'bg-gradient-to-r from-pink-500 to-purple-600 text-white' }} rounded-lg text-sm font-medium hover:shadow-lg transform hover:scale-105 transition-all duration-200">
                             {{ __('Registrarse') }}
                         </a>
                     @endif
