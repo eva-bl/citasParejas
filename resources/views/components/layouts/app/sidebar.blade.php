@@ -310,6 +310,15 @@
                                     </svg>
                                     <span class="font-medium">{{ __('Mis Planes') }}</span>
                                 </a>
+                                
+                                <a href="{{ route('statistics.index') }}" 
+                                   class="flex items-center gap-3 px-3 py-2 rounded-xl hover:bg-gradient-to-r hover:from-pink-500/10 hover:to-purple-500/10 transition-all {{ request()->routeIs('statistics.*') ? 'bg-gradient-to-r from-pink-500/10 to-purple-500/10 text-pink-600' : 'text-neutral-700' }}"
+                                   wire:navigate>
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                                    </svg>
+                                    <span class="font-medium">{{ __('Estadísticas') }}</span>
+                                </a>
                             @endif
                         @endauth
                     </nav>
