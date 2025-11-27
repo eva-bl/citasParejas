@@ -3,6 +3,7 @@
 namespace App\Observers;
 
 use App\Actions\Rating\CalculatePlanAveragesAction;
+use App\Jobs\EvaluateUserBadgesJob;
 use App\Models\Rating;
 use App\Services\StatisticsService;
 
@@ -20,6 +21,7 @@ class RatingObserver
     {
         $this->calculateAverages->execute($rating->plan);
         $this->invalidateStatisticsCache($rating);
+        $this->evaluateBadges($rating);
     }
 
     /**
@@ -29,6 +31,7 @@ class RatingObserver
     {
         $this->calculateAverages->execute($rating->plan);
         $this->invalidateStatisticsCache($rating);
+        $this->evaluateBadges($rating);
     }
 
     /**
@@ -53,6 +56,16 @@ class RatingObserver
         
         if ($rating->user) {
             $this->statisticsService->invalidateUserCache($rating->user);
+        }
+    }
+    
+    /**
+     * Evaluate badges when a rating is created or updated
+     */
+    protected function evaluateBadges(Rating $rating): void
+    {
+        if ($rating->user) {
+            EvaluateUserBadgesJob::dispatch($rating->user);
         }
     }
 }
