@@ -3,10 +3,14 @@
 namespace App\Observers;
 
 use App\Models\Plan;
-use Illuminate\Support\Facades\Cache;
+use App\Services\StatisticsService;
 
 class PlanObserver
 {
+    public function __construct(
+        private StatisticsService $statisticsService
+    ) {}
+
     /**
      * Handle the Plan "created" event.
      */
@@ -44,8 +48,12 @@ class PlanObserver
      */
     protected function invalidateCache(Plan $plan): void
     {
-        if ($plan->couple_id) {
-            Cache::tags(['couple_stats', "couple_{$plan->couple_id}"])->flush();
+        if ($plan->couple) {
+            $this->statisticsService->invalidateCoupleCache($plan->couple);
+        }
+        
+        if ($plan->createdBy) {
+            $this->statisticsService->invalidateUserCache($plan->createdBy);
         }
     }
 }

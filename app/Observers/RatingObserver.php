@@ -4,11 +4,13 @@ namespace App\Observers;
 
 use App\Actions\Rating\CalculatePlanAveragesAction;
 use App\Models\Rating;
+use App\Services\StatisticsService;
 
 class RatingObserver
 {
     public function __construct(
-        private CalculatePlanAveragesAction $calculateAverages
+        private CalculatePlanAveragesAction $calculateAverages,
+        private StatisticsService $statisticsService
     ) {}
 
     /**
@@ -17,6 +19,7 @@ class RatingObserver
     public function created(Rating $rating): void
     {
         $this->calculateAverages->execute($rating->plan);
+        $this->invalidateStatisticsCache($rating);
     }
 
     /**
@@ -25,6 +28,7 @@ class RatingObserver
     public function updated(Rating $rating): void
     {
         $this->calculateAverages->execute($rating->plan);
+        $this->invalidateStatisticsCache($rating);
     }
 
     /**
@@ -35,6 +39,21 @@ class RatingObserver
         // Get plan before rating is deleted
         $plan = $rating->plan;
         $this->calculateAverages->execute($plan);
+        $this->invalidateStatisticsCache($rating);
+    }
+
+    /**
+     * Invalidate statistics cache when rating changes
+     */
+    protected function invalidateStatisticsCache(Rating $rating): void
+    {
+        if ($rating->plan && $rating->plan->couple) {
+            $this->statisticsService->invalidateCoupleCache($rating->plan->couple);
+        }
+        
+        if ($rating->user) {
+            $this->statisticsService->invalidateUserCache($rating->user);
+        }
     }
 }
 

@@ -102,6 +102,24 @@
                                           x-transition:leave-end="opacity-0"
                                           class="font-medium">{{ __('Mis Planes') }}</span>
                                 </a>
+                                
+                                <a href="{{ route('statistics.index') }}" 
+                                   :class="sidebarCollapsed ? 'justify-center px-3' : 'gap-3 px-3'"
+                                   class="flex items-center py-2 rounded-xl hover:bg-gradient-to-r hover:from-pink-500/10 hover:to-purple-500/10 transition-all group {{ request()->routeIs('statistics.*') ? 'bg-gradient-to-r from-pink-500/10 to-purple-500/10 text-pink-600' : 'text-neutral-700' }}"
+                                   wire:navigate
+                                   :title="sidebarCollapsed ? 'Estadísticas' : ''">
+                                    <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                                    </svg>
+                                    <span x-show="!sidebarCollapsed" 
+                                          x-transition:enter="transition ease-out duration-200"
+                                          x-transition:enter-start="opacity-0"
+                                          x-transition:enter-end="opacity-100"
+                                          x-transition:leave="transition ease-in duration-200"
+                                          x-transition:leave-start="opacity-100"
+                                          x-transition:leave-end="opacity-0"
+                                          class="font-medium">{{ __('Estadísticas') }}</span>
+                                </a>
                             @endif
                         @endauth
                     </div>
