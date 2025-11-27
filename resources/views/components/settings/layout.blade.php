@@ -1,4 +1,4 @@
-<div class="flex items-start max-md:flex-col bg-white min-h-screen">
+<div class="flex items-start max-md:flex-col bg-white min-h-screen pt-4">
     <div class="me-10 w-full pb-4 md:w-[220px]">
         <nav class="space-y-1">
             <a href="{{ route('profile.edit') }}" 

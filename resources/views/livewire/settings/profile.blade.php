@@ -116,8 +116,6 @@ new class extends Component {
 }; ?>
 
 <section class="w-full bg-white min-h-screen">
-    @include('partials.settings-heading')
-
     <x-settings.layout :heading="__('Mi Perfil')" :subheading="__('Actualiza tu información personal')">
         <!-- Avatar Section -->
         <div class="mb-8 flex flex-col items-center">
