@@ -289,10 +289,15 @@ new class extends Component {
             </div>
 
             <form wire:submit="updateProfileInformation" class="w-full space-y-6">
-            <div>
-                <label class="block text-sm font-medium text-purple-600 mb-2">
-                    {{ __('Nombre') }}
-                </label>
+                <!-- Sección: Datos personales -->
+                <div>
+                    <h2 class="text-lg font-semibold text-purple-700 mb-4">{{ __('Datos personales') }}</h2>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-purple-600 mb-2">
+                        {{ __('Nombre') }}
+                    </label>
                 <input wire:model="name" 
                        type="text" 
                        required 
@@ -341,45 +346,56 @@ new class extends Component {
                        autocomplete="nickname"
                        placeholder="{{ __('Opcional') }}"
                        class="w-full px-4 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-purple-700">
-                <p class="mt-1 text-xs text-neutral-500">{{ __('Un apodo o alias que te identifique') }}</p>
-            </div>
+                    <p class="mt-1 text-xs text-neutral-500">{{ __('Un apodo o alias que te identifique') }}</p>
+                </div>
 
-            <div>
-                <label class="block text-sm font-medium text-purple-600 mb-2">
-                    {{ __('Zona horaria') }}
-                </label>
-                <select wire:model="timezone" 
-                        class="w-full px-4 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-purple-700 bg-white">
-                    @foreach($this->timezones as $tz => $label)
-                        <option value="{{ $tz }}">{{ $label }}</option>
-                    @endforeach
-                </select>
-                <p class="mt-1 text-xs text-neutral-500">{{ __('La aplicación se adaptará a esta zona horaria') }}</p>
-            </div>
+                <!-- Separador -->
+                <hr class="my-6 border-purple-200/40">
 
-            <div>
-                <label class="block text-sm font-medium text-purple-600 mb-2">
-                    {{ __('Idioma') }}
-                </label>
-                <select wire:model="locale" 
-                        class="w-full px-4 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-purple-700 bg-white">
-                    @foreach($this->locales as $loc => $data)
-                        <option value="{{ $loc }}">{{ $data['flag'] }} {{ $data['name'] }}</option>
-                    @endforeach
-                </select>
-                <p class="mt-1 text-xs text-neutral-500">{{ __('La aplicación se traducirá a este idioma') }}</p>
-            </div>
+                <!-- Sección: Idioma y zona horaria -->
+                <div>
+                    <h2 class="text-lg font-semibold text-purple-700 mb-4">{{ __('Idioma y zona horaria') }}</h2>
+                </div>
 
-            <div class="flex items-center gap-4">
-                <button type="submit" 
-                        class="px-6 py-2 bg-purple-600 text-white rounded-lg font-medium hover:bg-purple-700 hover:shadow-lg transform hover:scale-105 transition-all duration-200"
-                        data-test="update-profile-button">
-                    {{ __('Guardar') }}
-                </button>
+                <div>
+                    <label class="block text-sm font-medium text-purple-600 mb-2">
+                        {{ __('Zona horaria') }}
+                    </label>
+                    <select wire:model="timezone" 
+                            class="w-full px-4 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-purple-700 bg-white">
+                        @foreach($this->timezones as $tz => $label)
+                            <option value="{{ $tz }}">{{ $label }}</option>
+                        @endforeach
+                    </select>
+                    <p class="mt-1 text-xs text-neutral-500">{{ __('La aplicación se adaptará a esta zona horaria') }}</p>
+                </div>
 
-                <x-action-message class="me-3 text-purple-600 font-medium" on="profile-updated">
-                    {{ __('Guardado.') }}
-                </x-action-message>
+                <div>
+                    <label class="block text-sm font-medium text-purple-600 mb-2">
+                        {{ __('Idioma') }}
+                    </label>
+                    <select wire:model="locale" 
+                            class="w-full px-4 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-purple-700 bg-white">
+                        @foreach($this->locales as $loc => $data)
+                            <option value="{{ $loc }}">{{ $data['flag'] }} {{ $data['name'] }}</option>
+                        @endforeach
+                    </select>
+                    <p class="mt-1 text-xs text-neutral-500">{{ __('La aplicación se traducirá a este idioma') }}</p>
+                </div>
+
+                <!-- Separador antes del botón -->
+                <hr class="my-6 border-purple-200/40">
+
+                <div class="flex items-center gap-4">
+                    <button type="submit" 
+                            class="px-6 py-2 bg-purple-600 text-white rounded-lg font-medium hover:bg-purple-700 hover:shadow-lg transform hover:scale-105 transition-all duration-200"
+                            data-test="update-profile-button">
+                        {{ __('Guardar') }}
+                    </button>
+
+                    <x-action-message class="me-3 text-purple-600 font-medium" on="profile-updated">
+                        {{ __('Guardado.') }}
+                    </x-action-message>
                 </div>
             </form>
 
