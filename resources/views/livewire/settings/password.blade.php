@@ -169,10 +169,86 @@ new class extends Component {
      */
     public function updatePassword(): void
     {
+        $user = Auth::user();
+        
         try {
             $validated = $this->validate([
                 'current_password' => ['required', 'string', 'current_password'],
-                'password' => ['required', 'string', Password::defaults(), 'confirmed'],
+                'password' => [
+                    'required',
+                    'string',
+                    'min:8',
+                    'confirmed',
+                    function ($attribute, $value, $fail) use ($user) {
+                        // 2. Al menos una mayúscula
+                        if (!preg_match('/[A-Z]/', $value)) {
+                            $fail(__('La contraseña debe contener al menos una mayúscula (A-Z).'));
+                        }
+                        
+                        // 3. Al menos una minúscula
+                        if (!preg_match('/[a-z]/', $value)) {
+                            $fail(__('La contraseña debe contener al menos una minúscula (a-z).'));
+                        }
+                        
+                        // 4. Al menos un número
+                        if (!preg_match('/[0-9]/', $value)) {
+                            $fail(__('La contraseña debe contener al menos un número (0-9).'));
+                        }
+                        
+                        // 5. Al menos un carácter especial
+                        if (!preg_match('/[^a-zA-Z0-9]/', $value)) {
+                            $fail(__('La contraseña debe contener al menos un carácter especial.'));
+                        }
+                        
+                        // 7. No espacios al inicio o final
+                        if (trim($value) !== $value) {
+                            $fail(__('La contraseña no puede tener espacios al inicio o final.'));
+                        }
+                        
+                        // 8. No puede contener parte del nombre del usuario
+                        if ($user && !empty($user->name)) {
+                            $nameParts = explode(' ', strtolower($user->name));
+                            foreach ($nameParts as $part) {
+                                if (strlen($part) >= 3 && stripos(strtolower($value), strtolower($part)) !== false) {
+                                    $fail(__('La contraseña no puede contener parte de tu nombre de usuario.'));
+                                    break;
+                                }
+                            }
+                        }
+                        
+                        // 9. No más del 40% del texto repetido
+                        $charCounts = array_count_values(str_split($value));
+                        $maxRepeated = max($charCounts);
+                        $repeatedPercentage = ($maxRepeated / strlen($value)) * 100;
+                        if ($repeatedPercentage > 40) {
+                            $fail(__('La contraseña no puede tener más del 40% de caracteres repetidos.'));
+                        }
+                        
+                        // 10. No secuencias obvias
+                        $sequences = [
+                            '0123456789',
+                            '9876543210',
+                            'abcdefghijklmnopqrstuvwxyz',
+                            'zyxwvutsrqponmlkjihgfedcba',
+                            'qwertyuiop',
+                            'asdfghjkl',
+                            'zxcvbnm',
+                        ];
+                        
+                        $passwordLower = strtolower($value);
+                        foreach ($sequences as $sequence) {
+                            if (strlen($value) >= 3) {
+                                for ($i = 0; $i <= strlen($sequence) - 3; $i++) {
+                                    $subsequence = substr($sequence, $i, 3);
+                                    if (strpos($passwordLower, $subsequence) !== false) {
+                                        $fail(__('La contraseña no puede contener secuencias obvias (123, abc, qwerty, etc.).'));
+                                        break 2;
+                                    }
+                                }
+                            }
+                        }
+                    },
+                ],
             ]);
         } catch (ValidationException $e) {
             $this->reset('current_password', 'password', 'password_confirmation');
