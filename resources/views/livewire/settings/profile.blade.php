@@ -215,16 +215,25 @@ new class extends Component {
             $user->save();
 
             // Refresh user in session
-            Auth::setUser($user->fresh());
+            $user = $user->fresh();
+            Auth::setUser($user);
 
+            // Clear avatar property
             $this->avatar = null;
             $this->showAvatarMenu = false;
             
-            // Force component refresh
+            // Force component refresh to show new avatar
             $this->dispatch('avatar-updated');
             $this->dispatch('$refresh');
             
+            // Flash success message
             session()->flash('avatar-success', __('Foto de perfil actualizada correctamente.'));
+            
+            // Force Livewire to re-render the component by refreshing the user data
+            $this->mount();
+            
+            // Dispatch event to update avatar display
+            $this->dispatch('avatar-updated', ['user_id' => $user->id]);
         } catch (\Exception $e) {
             \Log::error('Error al subir avatar: ' . $e->getMessage(), [
                 'user_id' => Auth::id(),
@@ -294,13 +303,6 @@ new class extends Component {
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                     <span>{{ session('avatar-success') }}</span>
-                </div>
-            @endif
-
-            <!-- Mensaje de éxito -->
-            @if(session('avatar-success'))
-                <div class="p-3 bg-green-50 border border-green-200 rounded-lg text-sm text-green-600">
-                    {{ session('avatar-success') }}
                 </div>
             @endif
 
