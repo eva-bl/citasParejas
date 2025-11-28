@@ -269,11 +269,11 @@ new class extends Component {
 <section class="w-full min-h-screen py-8">
     <x-settings.layout>
         <!-- Card Container -->
-        <div class="max-w-3xl mx-auto bg-white/60 backdrop-blur-xl shadow-lg rounded-2xl p-8 space-y-6">
+        <div class="max-w-xl mx-auto bg-white/70 backdrop-blur-xl shadow-xl rounded-2xl p-10">
             <form method="POST" wire:submit="updatePassword" class="w-full space-y-6">
                 <!-- Sección: Cambiar contraseña -->
                 <div>
-                    <h2 class="text-lg font-semibold text-purple-700 mb-4">{{ __('Cambiar contraseña') }}</h2>
+                    <h2 class="text-2xl font-semibold text-purple-700 mb-6">{{ __('Cambiar contraseña') }}</h2>
                 </div>
 
                 <div>
