@@ -4,7 +4,7 @@
 
 param(
     [Parameter(Mandatory=$false)]
-    [string]$Message = "Auto-commit: Cambios realizados"
+    [string]$Message = "Auto-commit: Changes made"
 )
 
 # Configurar UTF-8

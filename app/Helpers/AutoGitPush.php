@@ -13,7 +13,7 @@ class AutoGitPush
      * @param string $message Mensaje del commit
      * @return bool
      */
-    public static function push(string $message = 'Auto-commit: Cambios realizados'): bool
+    public static function push(string $message = 'Auto-commit: Changes made'): bool
     {
         try {
             $basePath = base_path();
