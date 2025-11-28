@@ -11,6 +11,30 @@ new class extends Component {
     public string $password_confirmation = '';
 
     /**
+     * Check if password has minimum 8 characters
+     */
+    public function getHasMinLengthProperty(): bool
+    {
+        return !empty($this->password) && strlen($this->password) >= 8;
+    }
+
+    /**
+     * Check if password has at least one number
+     */
+    public function getHasNumberProperty(): bool
+    {
+        return !empty($this->password) && preg_match('/[0-9]/', $this->password);
+    }
+
+    /**
+     * Check if password has at least one uppercase letter
+     */
+    public function getHasUppercaseProperty(): bool
+    {
+        return !empty($this->password) && preg_match('/[A-Z]/', $this->password);
+    }
+
+    /**
      * Get password validation errors
      */
     public function getPasswordValidationErrorsProperty(): array
@@ -311,6 +335,55 @@ new class extends Component {
                             </div>
                         @endif
                     </div>
+                    
+                    <!-- Lista visual de requisitos básicos -->
+                    @if(!empty($this->password))
+                        <div class="mt-3 space-y-1">
+                            <p class="text-xs font-medium text-purple-600 mb-2">{{ __('Requisitos:') }}</p>
+                            <ul class="text-sm space-y-1">
+                                <li class="flex items-center gap-2">
+                                    @if($this->hasMinLength)
+                                        <svg class="w-4 h-4 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                        </svg>
+                                        <span class="text-green-600">{{ __('Mínimo 8 caracteres') }}</span>
+                                    @else
+                                        <svg class="w-4 h-4 text-neutral-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                        </svg>
+                                        <span class="text-neutral-500">{{ __('Mínimo 8 caracteres') }}</span>
+                                    @endif
+                                </li>
+                                <li class="flex items-center gap-2">
+                                    @if($this->hasNumber)
+                                        <svg class="w-4 h-4 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                        </svg>
+                                        <span class="text-green-600">{{ __('Incluir un número') }}</span>
+                                    @else
+                                        <svg class="w-4 h-4 text-neutral-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                        </svg>
+                                        <span class="text-neutral-500">{{ __('Incluir un número') }}</span>
+                                    @endif
+                                </li>
+                                <li class="flex items-center gap-2">
+                                    @if($this->hasUppercase)
+                                        <svg class="w-4 h-4 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                        </svg>
+                                        <span class="text-green-600">{{ __('Incluir una mayúscula') }}</span>
+                                    @else
+                                        <svg class="w-4 h-4 text-neutral-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                        </svg>
+                                        <span class="text-neutral-500">{{ __('Incluir una mayúscula') }}</span>
+                                    @endif
+                                </li>
+                            </ul>
+                        </div>
+                    @endif
+                    
                     @if(!empty($this->password))
                         <div class="mt-2 space-y-1">
                             @if($this->passwordIsValid)
