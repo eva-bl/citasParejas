@@ -36,44 +36,61 @@ new class extends Component {
     }
 }; ?>
 
-<section class="w-full">
-    @include('partials.settings-heading')
-
-    <x-settings.layout :heading="__('Update password')" :subheading="__('Ensure your account is using a long, random password to stay secure')">
-        <form method="POST" wire:submit="updatePassword" class="mt-6 space-y-6">
-            <flux:input
-                wire:model="current_password"
-                :label="__('Current password')"
-                type="password"
-                required
-                autocomplete="current-password"
-            />
-            <flux:input
-                wire:model="password"
-                :label="__('New password')"
-                type="password"
-                required
-                autocomplete="new-password"
-            />
-            <flux:input
-                wire:model="password_confirmation"
-                :label="__('Confirm Password')"
-                type="password"
-                required
-                autocomplete="new-password"
-            />
-
-            <div class="flex items-center gap-4">
-                <div class="flex items-center justify-end">
-                    <flux:button variant="primary" type="submit" class="w-full" data-test="update-password-button">
-                        {{ __('Save') }}
-                    </flux:button>
+<section class="w-full min-h-screen py-8">
+    <x-settings.layout>
+        <!-- Card Container -->
+        <div class="max-w-3xl mx-auto bg-white/60 backdrop-blur-xl shadow-lg rounded-2xl p-8 space-y-6">
+            <form method="POST" wire:submit="updatePassword" class="w-full space-y-6">
+                <!-- Sección: Cambiar contraseña -->
+                <div>
+                    <h2 class="text-lg font-semibold text-purple-700 mb-4">{{ __('Cambiar contraseña') }}</h2>
                 </div>
 
-                <x-action-message class="me-3" on="password-updated">
-                    {{ __('Saved.') }}
-                </x-action-message>
-            </div>
-        </form>
+                <div>
+                    <label class="block text-sm font-medium text-purple-600 mb-2">
+                        {{ __('Contraseña actual') }}
+                    </label>
+                    <input wire:model="current_password"
+                           type="password"
+                           required
+                           autocomplete="current-password"
+                           class="w-full px-4 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-purple-700">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-purple-600 mb-2">
+                        {{ __('Nueva contraseña') }}
+                    </label>
+                    <input wire:model="password"
+                           type="password"
+                           required
+                           autocomplete="new-password"
+                           class="w-full px-4 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-purple-700">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-purple-600 mb-2">
+                        {{ __('Confirmar contraseña') }}
+                    </label>
+                    <input wire:model="password_confirmation"
+                           type="password"
+                           required
+                           autocomplete="new-password"
+                           class="w-full px-4 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-purple-700">
+                </div>
+
+                <div class="flex items-center gap-4">
+                    <button type="submit" 
+                            class="px-6 py-2 bg-purple-600 text-white rounded-lg font-medium hover:bg-purple-700 hover:shadow-lg transform hover:scale-105 transition-all duration-200"
+                            data-test="update-password-button">
+                        {{ __('Guardar') }}
+                    </button>
+
+                    <x-action-message class="me-3 text-purple-600 font-medium" on="password-updated">
+                        {{ __('Guardado.') }}
+                    </x-action-message>
+                </div>
+            </form>
+        </div>
     </x-settings.layout>
 </section>
