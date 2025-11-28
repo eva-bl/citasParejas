@@ -306,22 +306,18 @@ new class extends Component {
             <!-- Avatar and Name Section -->
             <div class="flex items-center gap-6">
                 <div class="relative group flex-shrink-0"
-                     x-data="{ 
-                         refreshAvatar() {
-                             $wire.$refresh();
-                         }
-                     }"
-                     @avatar-updated.window="refreshAvatar()"
-                     wire:key="avatar-{{ auth()->user()->id }}-{{ auth()->user()->avatar_path }}">
+                     wire:key="avatar-container-{{ auth()->user()->id }}-{{ auth()->user()->avatar_path ?? 'no-avatar' }}">
                     @php
                         $user = auth()->user()->fresh();
                     @endphp
                     @if($user->hasAvatar())
-                        <img src="{{ $user->avatar_url }}?v={{ time() }}" 
+                        <img src="{{ $user->avatar_url }}?v={{ now()->timestamp }}" 
                              alt="{{ $user->name }}" 
-                             class="w-32 h-32 rounded-full object-cover border-4 border-white shadow-lg">
+                             class="w-32 h-32 rounded-full object-cover border-4 border-white shadow-lg"
+                             wire:key="avatar-img-{{ $user->id }}-{{ $user->avatar_path }}">
                     @else
-                        <div class="w-32 h-32 rounded-full bg-gradient-to-br from-pink-500 to-purple-600 flex items-center justify-center text-white text-4xl font-bold shadow-lg">
+                        <div class="w-32 h-32 rounded-full bg-gradient-to-br from-pink-500 to-purple-600 flex items-center justify-center text-white text-4xl font-bold shadow-lg"
+                             wire:key="avatar-initials-{{ $user->id }}">
                             {{ $user->initials() }}
                         </div>
                     @endif
