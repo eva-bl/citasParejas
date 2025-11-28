@@ -222,18 +222,15 @@ new class extends Component {
             $this->avatar = null;
             $this->showAvatarMenu = false;
             
-            // Force component refresh to show new avatar
-            $this->dispatch('avatar-updated');
-            $this->dispatch('$refresh');
-            
             // Flash success message
             session()->flash('avatar-success', __('Foto de perfil actualizada correctamente.'));
             
             // Force Livewire to re-render the component by refreshing the user data
             $this->mount();
             
-            // Dispatch event to update avatar display
+            // Dispatch events to update avatar display
             $this->dispatch('avatar-updated', ['user_id' => $user->id]);
+            $this->dispatch('$refresh');
         } catch (\Exception $e) {
             \Log::error('Error al subir avatar: ' . $e->getMessage(), [
                 'user_id' => Auth::id(),
