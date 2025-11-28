@@ -11,20 +11,106 @@ new class extends Component {
     public string $password_confirmation = '';
 
     /**
-     * Check if password meets minimum requirements
+     * Get password validation errors
+     */
+    public function getPasswordValidationErrorsProperty(): array
+    {
+        $errors = [];
+        
+        if (empty($this->password)) {
+            return $errors;
+        }
+        
+        $password = $this->password;
+        $user = Auth::user();
+        
+        // 1. Mínimo 8 caracteres
+        if (strlen($password) < 8) {
+            $errors[] = __('Mínimo 8 caracteres');
+        }
+        
+        // 2. Al menos una mayúscula (A-Z)
+        if (!preg_match('/[A-Z]/', $password)) {
+            $errors[] = __('Al menos una mayúscula (A-Z)');
+        }
+        
+        // 3. Al menos una minúscula (a-z)
+        if (!preg_match('/[a-z]/', $password)) {
+            $errors[] = __('Al menos una minúscula (a-z)');
+        }
+        
+        // 4. Al menos un número (0-9)
+        if (!preg_match('/[0-9]/', $password)) {
+            $errors[] = __('Al menos un número (0-9)');
+        }
+        
+        // 5. Al menos un carácter especial
+        if (!preg_match('/[^a-zA-Z0-9]/', $password)) {
+            $errors[] = __('Al menos un carácter especial');
+        }
+        
+        // 6. Mínimo 12 caracteres (nivel alto) - recomendado
+        if (strlen($password) < 12) {
+            $errors[] = __('Recomendado: mínimo 12 caracteres para mayor seguridad');
+        }
+        
+        // 7. No espacios al inicio o final
+        if (trim($password) !== $password) {
+            $errors[] = __('No puede tener espacios al inicio o final');
+        }
+        
+        // 8. No puede contener parte del nombre del usuario
+        if ($user && !empty($user->name)) {
+            $nameParts = explode(' ', strtolower($user->name));
+            foreach ($nameParts as $part) {
+                if (strlen($part) >= 3 && stripos(strtolower($password), strtolower($part)) !== false) {
+                    $errors[] = __('No puede contener parte de tu nombre de usuario');
+                    break;
+                }
+            }
+        }
+        
+        // 9. No más del 40% del texto repetido
+        $charCounts = array_count_values(str_split($password));
+        $maxRepeated = max($charCounts);
+        $repeatedPercentage = ($maxRepeated / strlen($password)) * 100;
+        if ($repeatedPercentage > 40) {
+            $errors[] = __('No se permite más del 40% de caracteres repetidos');
+        }
+        
+        // 10. No secuencias obvias (123, abc, qwerty, etc.)
+        $sequences = [
+            '0123456789',
+            '9876543210',
+            'abcdefghijklmnopqrstuvwxyz',
+            'zyxwvutsrqponmlkjihgfedcba',
+            'qwertyuiop',
+            'asdfghjkl',
+            'zxcvbnm',
+        ];
+        
+        $passwordLower = strtolower($password);
+        foreach ($sequences as $sequence) {
+            if (strlen($password) >= 3) {
+                for ($i = 0; $i <= strlen($sequence) - 3; $i++) {
+                    $subsequence = substr($sequence, $i, 3);
+                    if (strpos($passwordLower, $subsequence) !== false) {
+                        $errors[] = __('No se permiten secuencias obvias (123, abc, qwerty, etc.)');
+                        break 2;
+                    }
+                }
+            }
+        }
+        
+        return $errors;
+    }
+
+    /**
+     * Check if password meets all requirements
      */
     public function getPasswordIsValidProperty(): bool
     {
-        if (empty($this->password)) {
-            return false;
-        }
-        
-        // Minimum 8 characters
-        if (strlen($this->password) < 8) {
-            return false;
-        }
-        
-        return true;
+        return empty($this->passwordValidationErrors);
     }
 
     /**
@@ -36,11 +122,14 @@ new class extends Component {
             return null;
         }
         
-        if (strlen($this->password) < 8) {
-            return __('La contraseña debe tener al menos 8 caracteres.');
+        $errors = $this->passwordValidationErrors;
+        
+        if (empty($errors)) {
+            return __('Contraseña válida y segura.');
         }
         
-        return __('Contraseña válida.');
+        // Mostrar el primer error o un resumen
+        return $errors[0];
     }
 
     /**
@@ -146,19 +235,93 @@ new class extends Component {
                             </div>
                         @endif
                     </div>
-                    @if($this->passwordValidationMessage)
-                        <p class="mt-1 text-xs {{ $this->passwordIsValid ? 'text-green-600' : 'text-red-600' }} flex items-center gap-1">
+                    @if(!empty($this->password))
+                        <div class="mt-2 space-y-1">
                             @if($this->passwordIsValid)
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                                </svg>
+                                <p class="text-xs text-green-600 flex items-center gap-1">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                    </svg>
+                                    <span>{{ __('Contraseña válida y segura.') }}</span>
+                                </p>
                             @else
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                                </svg>
+                                <p class="text-xs text-red-600 font-medium mb-2">{{ __('La contraseña debe cumplir los siguientes requisitos:') }}</p>
+                                <ul class="space-y-1 text-xs text-red-600">
+                                    @php
+                                        $password = $this->password;
+                                        $user = Auth::user();
+                                        $checks = [
+                                            'Mínimo 8 caracteres' => strlen($password) >= 8,
+                                            'Al menos una mayúscula (A-Z)' => preg_match('/[A-Z]/', $password),
+                                            'Al menos una minúscula (a-z)' => preg_match('/[a-z]/', $password),
+                                            'Al menos un número (0-9)' => preg_match('/[0-9]/', $password),
+                                            'Al menos un carácter especial' => preg_match('/[^a-zA-Z0-9]/', $password),
+                                            'Recomendado: mínimo 12 caracteres' => strlen($password) >= 12,
+                                            'Sin espacios al inicio o final' => trim($password) === $password,
+                                        ];
+                                        
+                                        // Validar nombre de usuario
+                                        $nameCheck = true;
+                                        if ($user && !empty($user->name)) {
+                                            $nameParts = explode(' ', strtolower($user->name));
+                                            foreach ($nameParts as $part) {
+                                                if (strlen($part) >= 3 && stripos(strtolower($password), strtolower($part)) !== false) {
+                                                    $nameCheck = false;
+                                                    break;
+                                                }
+                                            }
+                                        }
+                                        $checks['No contiene parte de tu nombre'] = $nameCheck;
+                                        
+                                        // Validar caracteres repetidos
+                                        $charCounts = array_count_values(str_split($password));
+                                        $maxRepeated = max($charCounts);
+                                        $repeatedPercentage = strlen($password) > 0 ? ($maxRepeated / strlen($password)) * 100 : 0;
+                                        $checks['No más del 40% de caracteres repetidos'] = $repeatedPercentage <= 40;
+                                        
+                                        // Validar secuencias
+                                        $sequences = [
+                                            '0123456789',
+                                            '9876543210',
+                                            'abcdefghijklmnopqrstuvwxyz',
+                                            'zyxwvutsrqponmlkjihgfedcba',
+                                            'qwertyuiop',
+                                            'asdfghjkl',
+                                            'zxcvbnm',
+                                        ];
+                                        $sequenceCheck = true;
+                                        $passwordLower = strtolower($password);
+                                        foreach ($sequences as $sequence) {
+                                            if (strlen($password) >= 3) {
+                                                for ($i = 0; $i <= strlen($sequence) - 3; $i++) {
+                                                    $subsequence = substr($sequence, $i, 3);
+                                                    if (strpos($passwordLower, $subsequence) !== false) {
+                                                        $sequenceCheck = false;
+                                                        break 2;
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        $checks['No contiene secuencias obvias'] = $sequenceCheck;
+                                    @endphp
+                                    @foreach($checks as $label => $isValid)
+                                        <li class="flex items-center gap-2">
+                                            @if($isValid)
+                                                <svg class="w-3 h-3 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                                </svg>
+                                                <span class="text-green-600">{{ $label }}</span>
+                                            @else
+                                                <svg class="w-3 h-3 text-red-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                                </svg>
+                                                <span class="text-red-600">{{ $label }}</span>
+                                            @endif
+                                        </li>
+                                    @endforeach
+                                </ul>
                             @endif
-                            <span>{{ $this->passwordValidationMessage }}</span>
-                        </p>
+                        </div>
                     @endif
                 </div>
 
