@@ -21,6 +21,16 @@ new class extends Component {
     public bool $saved = false;
 
     /**
+     * Updated avatar property - automatically upload when file is selected
+     */
+    public function updatedAvatar(): void
+    {
+        if ($this->avatar) {
+            $this->uploadAvatar();
+        }
+    }
+
+    /**
      * Get timezones for the select
      */
     public function getTimezonesProperty(): array
@@ -349,7 +359,7 @@ new class extends Component {
                                            wire:model="avatar" 
                                            accept="image/jpeg,image/jpg,image/png,image/gif,image/webp" 
                                            class="hidden"
-                                           @change="$wire.uploadAvatar()">
+                                           wire:loading.attr="disabled">
                                 </label>
 
                                 <!-- Elegir Avatar -->
