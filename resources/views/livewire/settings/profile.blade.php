@@ -137,51 +137,93 @@ new class extends Component {
      */
     public function uploadAvatar(): void
     {
-        // Validar que sea un archivo
-        if (!$this->avatar) {
-            session()->flash('avatar-error', __('Por favor, selecciona un archivo.'));
-            return;
-        }
+        try {
+            // Validar que sea un archivo
+            if (!$this->avatar) {
+                session()->flash('avatar-error', __('Por favor, selecciona un archivo.'));
+                return;
+            }
 
-        // Validar extensión del archivo
-        $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
-        $extension = strtolower($this->avatar->getClientOriginalExtension());
-        
-        if (!in_array($extension, $allowedExtensions)) {
-            session()->flash('avatar-error', __('El archivo debe ser una imagen válida (.jpg, .jpeg, .png, .gif o .webp).'));
+            // Validar extensión del archivo
+            $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+            $extension = strtolower($this->avatar->getClientOriginalExtension());
+            
+            if (!in_array($extension, $allowedExtensions)) {
+                session()->flash('avatar-error', __('El archivo debe ser una imagen válida (.jpg, .jpeg, .png, .gif o .webp).'));
+                $this->avatar = null;
+                return;
+            }
+
+            // Validar tamaño del archivo (10MB máximo)
+            $maxSize = 10 * 1024 * 1024; // 10MB en bytes
+            $fileSize = $this->avatar->getSize();
+            if ($fileSize > $maxSize) {
+                $sizeInMB = round($fileSize / (1024 * 1024), 2);
+                session()->flash('avatar-error', __('La imagen es demasiado grande (:size MB). El tamaño máximo permitido es 10MB.', ['size' => $sizeInMB]));
+                $this->avatar = null;
+                return;
+            }
+
+            // Validar que sea realmente una imagen
+            try {
+                $this->validate([
+                    'avatar' => ['required', 'image', 'mimes:jpeg,jpg,png,gif,webp', 'max:10240'], // 10MB max
+                ], [
+                    'avatar.required' => __('Por favor, selecciona un archivo.'),
+                    'avatar.image' => __('El archivo debe ser una imagen válida.'),
+                    'avatar.mimes' => __('El archivo debe ser una imagen válida (.jpg, .jpeg, .png, .gif o .webp).'),
+                    'avatar.max' => __('La imagen no puede ser mayor de 10MB.'),
+                ]);
+            } catch (\Illuminate\Validation\ValidationException $e) {
+                $errors = $e->errors();
+                $errorMessage = collect($errors)->flatten()->first() ?? __('Error de validación al subir la imagen.');
+                session()->flash('avatar-error', $errorMessage);
+                $this->avatar = null;
+                return;
+            }
+
+            $user = Auth::user();
+
+            // Delete old avatar if exists
+            if ($user->avatar_path) {
+                Storage::disk('public')->delete($user->avatar_path);
+            }
+
+            // Asegurar que el directorio existe
+            Storage::disk('public')->makeDirectory('avatars');
+
+            // Store new avatar
+            $path = $this->avatar->store('avatars', 'public');
+            
+            if (!$path) {
+                session()->flash('avatar-error', __('Error al guardar la imagen. Por favor, intenta de nuevo.'));
+                $this->avatar = null;
+                return;
+            }
+
+            $user->avatar_path = $path;
+            $user->save();
+
+            // Refresh user in session
+            Auth::setUser($user->fresh());
+
             $this->avatar = null;
-            return;
+            $this->showAvatarMenu = false;
+            
+            // Force component refresh
+            $this->dispatch('avatar-updated');
+            $this->dispatch('$refresh');
+            
+            session()->flash('avatar-success', __('Foto de perfil actualizada correctamente.'));
+        } catch (\Exception $e) {
+            \Log::error('Error al subir avatar: ' . $e->getMessage(), [
+                'user_id' => Auth::id(),
+                'file_size' => $this->avatar ? $this->avatar->getSize() : null,
+                'file_type' => $this->avatar ? $this->avatar->getMimeType() : null,
+            ]);
+            session()->flash('avatar-error', __('Error al subir la imagen. Por favor, verifica que el archivo sea una imagen válida y no exceda 10MB.'));
+            $this->avatar = null;
         }
-
-        // Validar que sea realmente una imagen
-        $this->validate([
-            'avatar' => ['required', 'image', 'max:2048'], // 2MB max
-        ], [
-            'avatar.image' => __('El archivo debe ser una imagen válida (.jpg, .jpeg, .png, .gif o .webp).'),
-            'avatar.max' => __('La imagen no puede ser mayor de 2MB.'),
-        ]);
-
-        $user = Auth::user();
-
-        // Delete old avatar if exists
-        if ($user->avatar_path) {
-            Storage::disk('public')->delete($user->avatar_path);
-        }
-
-        // Store new avatar
-        $path = $this->avatar->store('avatars', 'public');
-        $user->avatar_path = $path;
-        $user->save();
-
-        // Refresh user in session
-        Auth::setUser($user->fresh());
-
-        $this->avatar = null;
-        $this->showAvatarMenu = false;
-        
-        // Force component refresh
-        $this->dispatch('avatar-updated');
-        $this->dispatch('$refresh');
     }
 
     /**
@@ -226,10 +268,29 @@ new class extends Component {
     <x-settings.layout>
         <!-- Card Container -->
         <div class="max-w-3xl mx-auto bg-white/60 backdrop-blur-xl shadow-lg rounded-2xl p-8 space-y-6">
-            <!-- Mensaje de error -->
+            <!-- Mensajes de avatar -->
             @if(session('avatar-error'))
-                <div class="p-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-600">
-                    {{ session('avatar-error') }}
+                <div class="p-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-600 flex items-center gap-2">
+                    <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <span>{{ session('avatar-error') }}</span>
+                </div>
+            @endif
+
+            @if(session('avatar-success'))
+                <div class="p-3 bg-green-50 border border-green-200 rounded-lg text-sm text-green-600 flex items-center gap-2">
+                    <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <span>{{ session('avatar-success') }}</span>
+                </div>
+            @endif
+
+            <!-- Mensaje de éxito -->
+            @if(session('avatar-success'))
+                <div class="p-3 bg-green-50 border border-green-200 rounded-lg text-sm text-green-600">
+                    {{ session('avatar-success') }}
                 </div>
             @endif
 
