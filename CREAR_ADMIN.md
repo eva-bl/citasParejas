@@ -74,3 +74,4 @@ $user->is_admin; // Debe ser 1 o true
 
 
 
+

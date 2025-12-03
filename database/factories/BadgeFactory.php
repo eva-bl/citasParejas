@@ -34,3 +34,4 @@ class BadgeFactory extends Factory
 
 
 
+
