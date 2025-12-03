@@ -24,10 +24,8 @@ new class extends Component
                 auth()->user(),
                 $validated['name']
             );
-
-            session()->flash('success', __('Pareja creada exitosamente. Comparte este código con tu pareja: :code', ['code' => $couple->join_code]));
             
-            return $this->redirect(route('dashboard'), navigate: true);
+            return $this->redirect(route('couple.code', $couple), navigate: true);
         } catch (\Exception $e) {
             $this->addError('couple', $e->getMessage());
         }

@@ -33,6 +33,7 @@ Route::middleware(['auth'])->group(function () {
     // Couple routes
     Volt::route('couple/setup', 'couple.setup')->name('couple.setup');
     Volt::route('couple/create', 'couple.create-couple')->name('couple.create');
+    Volt::route('couple/{couple}/code', 'couple.couple-code')->name('couple.code');
     Volt::route('couple/join', 'couple.join-couple')->name('couple.join');
 
     // Plans routes

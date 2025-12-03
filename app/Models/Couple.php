@@ -15,26 +15,20 @@ class Couple extends Model
         'name',
         'member_count',
         'photo_path',
-        'relationship_start_date',
-        'anniversary_date',
-        'emoji',
-        'color',
-        'plan_styles',
-    ];
-
-    protected $casts = [
-        'relationship_start_date' => 'date',
-        'anniversary_date' => 'date',
-        'plan_styles' => 'array',
     ];
 
     /**
-     * Generate a unique join code
+     * Generate a unique join code (12 characters: numbers, uppercase and lowercase letters)
      */
     public static function generateJoinCode(): string
     {
+        $characters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+        
         do {
-            $code = strtoupper(substr(md5(uniqid(rand(), true)), 0, 12));
+            $code = '';
+            for ($i = 0; $i < 12; $i++) {
+                $code .= $characters[random_int(0, strlen($characters) - 1)];
+            }
         } while (self::where('join_code', $code)->exists());
 
         return $code;
