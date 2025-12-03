@@ -25,7 +25,7 @@ new class extends Component
                 $validated['name']
             );
             
-            return $this->redirect(route('couple.code', $couple), navigate: true);
+            return $this->redirect(route('couple.code', ['couple' => $couple->id]), navigate: true);
         } catch (\Exception $e) {
             $this->addError('couple', $e->getMessage());
         }

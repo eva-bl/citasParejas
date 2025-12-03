@@ -52,9 +52,12 @@ new class extends Component
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                             </svg>
                         </div>
-                        <h2 class="text-3xl md:text-4xl font-bold text-neutral-900 mb-3">{{ __('¡Pareja creada exitosamente!') }}</h2>
-                        <p class="text-neutral-600 text-lg">
-                            {{ __('Comparte este código único con tu pareja para que se una a tu pareja.') }}
+                        <h2 class="text-3xl md:text-4xl font-bold text-neutral-900 mb-2">{{ __('¡Bienvenido a') }} <span class="bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent">{{ $couple->name }}</span>!</h2>
+                        <p class="text-neutral-600 text-lg mb-3">
+                            {{ __('Tu pareja ha sido creada exitosamente.') }}
+                        </p>
+                        <p class="text-neutral-500 text-base">
+                            {{ __('Comparte este código único con tu pareja para que se una.') }}
                         </p>
                     </div>
 
