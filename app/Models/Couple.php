@@ -15,6 +15,17 @@ class Couple extends Model
         'name',
         'member_count',
         'photo_path',
+        'relationship_start_date',
+        'anniversary_date',
+        'emoji',
+        'color',
+        'plan_styles',
+    ];
+
+    protected $casts = [
+        'relationship_start_date' => 'date',
+        'anniversary_date' => 'date',
+        'plan_styles' => 'array',
     ];
 
     /**

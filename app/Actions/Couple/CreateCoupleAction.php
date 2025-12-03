@@ -21,16 +21,30 @@ class CreateCoupleAction
      * @param string|null $name
      * @param int $memberCount
      * @param UploadedFile|null $photo
+     * @param string|null $relationshipStartDate
+     * @param string|null $anniversaryDate
+     * @param string|null $emoji
+     * @param string|null $color
+     * @param array|null $planStyles
      * @return Couple
      */
-    public function execute(User $user, ?string $name = null, int $memberCount = 2, ?UploadedFile $photo = null): Couple
-    {
+    public function execute(
+        User $user,
+        ?string $name = null,
+        int $memberCount = 2,
+        ?UploadedFile $photo = null,
+        ?string $relationshipStartDate = null,
+        ?string $anniversaryDate = null,
+        ?string $emoji = null,
+        ?string $color = null,
+        ?array $planStyles = null
+    ): Couple {
         // Check if user already has a couple
         if ($user->hasCouple()) {
             throw new \Exception('User already belongs to a couple');
         }
 
-        return DB::transaction(function () use ($user, $name, $memberCount, $photo) {
+        return DB::transaction(function () use ($user, $name, $memberCount, $photo, $relationshipStartDate, $anniversaryDate, $emoji, $color, $planStyles) {
             // Process photo if provided
             $photoPath = null;
             if ($photo) {
@@ -40,6 +54,11 @@ class CreateCoupleAction
                     'join_code' => Couple::generateJoinCode(),
                     'name' => $name,
                     'member_count' => $memberCount,
+                    'relationship_start_date' => $relationshipStartDate ? \Carbon\Carbon::createFromFormat('d/m/Y', $relationshipStartDate)->format('Y-m-d') : null,
+                    'anniversary_date' => $anniversaryDate ? \Carbon\Carbon::createFromFormat('d/m/Y', $anniversaryDate)->format('Y-m-d') : null,
+                    'emoji' => $emoji,
+                    'color' => $color,
+                    'plan_styles' => $planStyles,
                 ]);
                 
                 $photoPath = $this->imageService->processAndStoreCouplePhoto($photo, $tempCouple->id);
@@ -52,6 +71,11 @@ class CreateCoupleAction
                     'join_code' => Couple::generateJoinCode(),
                     'name' => $name,
                     'member_count' => $memberCount,
+                    'relationship_start_date' => $relationshipStartDate ? \Carbon\Carbon::createFromFormat('d/m/Y', $relationshipStartDate)->format('Y-m-d') : null,
+                    'anniversary_date' => $anniversaryDate ? \Carbon\Carbon::createFromFormat('d/m/Y', $anniversaryDate)->format('Y-m-d') : null,
+                    'emoji' => $emoji,
+                    'color' => $color,
+                    'plan_styles' => $planStyles,
                 ]);
             }
 
