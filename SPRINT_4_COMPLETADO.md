@@ -156,3 +156,5 @@ El siguiente sprint incluirá:
 - Galería con lightbox
 - Almacenamiento en storage
 
+
+

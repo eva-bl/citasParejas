@@ -29,3 +29,5 @@ test('user can delete a plan', function () {
     ->and($plan->activityLog()->where('action', 'deleted')->exists())->toBeTrue();
 });
 
+
+

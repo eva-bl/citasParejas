@@ -452,3 +452,5 @@
 - **Documentación:** Documentar decisiones importantes en código
 
 
+
+

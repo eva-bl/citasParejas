@@ -26,3 +26,5 @@ class CoupleFactory extends Factory
 }
 
 
+
+

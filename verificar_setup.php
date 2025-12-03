@@ -175,3 +175,5 @@ echo "   3. Inicia el servidor: php artisan serve\n";
 echo "   4. Abre: http://localhost:8000\n";
 
 
+
+

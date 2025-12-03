@@ -48,3 +48,5 @@ test('user cannot create plan without couple', function () {
     ]))->toThrow(\Exception::class, 'User must belong to a couple');
 });
 
+
+

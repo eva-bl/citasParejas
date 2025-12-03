@@ -157,3 +157,5 @@ El Sprint 5 está completo. El siguiente sprint es:
 - El contador `photos_count` se actualiza automáticamente vía Observer
 - El storage link permite acceso público a las imágenes
 
+
+

@@ -213,3 +213,5 @@ tail -f storage/logs/laravel.log
 - Los usuarios sin pareja no pueden acceder a funcionalidades que requieren pareja (esto se implementará en Sprint 3)
 
 
+
+

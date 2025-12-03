@@ -72,3 +72,5 @@ $user->is_admin; // Debe ser 1 o true
 - Los administradores pueden tener o no tener pareja (couple_id puede ser null)
 - El middleware de admin se implementará en el Sprint 6 con Filament
 
+
+

@@ -502,3 +502,5 @@ app/
 - La estructura de código propuesta facilitará mantenimiento y testing
 
 
+
+

@@ -185,3 +185,5 @@ El siguiente sprint incluirá:
 - Actualización de campos cacheados
 - Visualización de valoraciones
 
+
+

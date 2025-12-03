@@ -160,3 +160,5 @@ El siguiente sprint incluirá:
 - Observers para actividad log
 
 
+
+
