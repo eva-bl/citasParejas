@@ -3,17 +3,66 @@
 use App\Actions\Couple\CreateCoupleAction;
 use App\Models\Couple;
 use Livewire\Volt\Component;
+use Livewire\WithFileUploads;
 
 new class extends Component
 {
+    use WithFileUploads;
+
+    public string $name = '';
+    public int $member_count = 2;
+    public $photo = null;
+    public $photoPreview = null;
+
+    public function updatedPhoto()
+    {
+        $this->validate([
+            'photo' => 'nullable|image|mimes:jpeg,png,webp|max:10240', // 10MB max
+        ], [
+            'photo.image' => __('El archivo debe ser una imagen.'),
+            'photo.mimes' => __('La imagen debe ser JPG, PNG o WebP.'),
+            'photo.max' => __('La imagen no puede exceder 10MB.'),
+        ]);
+
+        if ($this->photo) {
+            $this->photoPreview = $this->photo->temporaryUrl();
+        }
+    }
+
+    public function removePhoto()
+    {
+        $this->photo = null;
+        $this->photoPreview = null;
+    }
+
     public function createCouple()
     {
         $this->authorize('create', Couple::class);
 
-        try {
-            $couple = app(CreateCoupleAction::class)->execute(auth()->user());
+        $validated = $this->validate([
+            'name' => 'required|string|max:255',
+            'member_count' => 'required|integer|min:2|max:10',
+            'photo' => 'nullable|image|mimes:jpeg,png,webp|max:10240',
+        ], [
+            'name.required' => __('El nombre de la pareja es obligatorio.'),
+            'name.max' => __('El nombre no puede exceder 255 caracteres.'),
+            'member_count.required' => __('Debes indicar cuántos sois en la pareja.'),
+            'member_count.min' => __('Debe haber al menos 2 personas en la pareja.'),
+            'member_count.max' => __('El número máximo de personas es 10.'),
+            'photo.image' => __('El archivo debe ser una imagen.'),
+            'photo.mimes' => __('La imagen debe ser JPG, PNG o WebP.'),
+            'photo.max' => __('La imagen no puede exceder 10MB.'),
+        ]);
 
-            session()->flash('success', 'Pareja creada exitosamente. Comparte este código con tu pareja: ' . $couple->join_code);
+        try {
+            $couple = app(CreateCoupleAction::class)->execute(
+                auth()->user(),
+                $validated['name'],
+                $validated['member_count'],
+                $this->photo
+            );
+
+            session()->flash('success', __('Pareja creada exitosamente. Comparte este código con tu pareja: :code', ['code' => $couple->join_code]));
             
             return $this->redirect(route('dashboard'), navigate: true);
         } catch (\Exception $e) {
@@ -84,6 +133,110 @@ new class extends Component
                     @enderror
 
                     <form wire:submit="createCouple" class="space-y-6">
+                        <!-- Nombre de la pareja -->
+                        <div>
+                            <label for="name" class="block text-sm font-medium text-purple-700 mb-2">
+                                {{ __('Nombre de la pareja') }} <span class="text-red-500">*</span>
+                            </label>
+                            <input type="text"
+                                   id="name"
+                                   wire:model="name"
+                                   required
+                                   placeholder="{{ __('Ej: Mi Pareja Perfecta') }}"
+                                   class="w-full px-4 py-3 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-purple-700 @error('name') border-red-500 @enderror">
+                            @error('name')
+                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        <!-- Número de personas -->
+                        <div>
+                            <label for="member_count" class="block text-sm font-medium text-purple-700 mb-2">
+                                {{ __('¿Cuántos sois en la pareja?') }} <span class="text-red-500">*</span>
+                            </label>
+                            <select id="member_count"
+                                    wire:model="member_count"
+                                    required
+                                    class="w-full px-4 py-3 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-purple-700 @error('member_count') border-red-500 @enderror">
+                                @for($i = 2; $i <= 10; $i++)
+                                    <option value="{{ $i }}">{{ $i }} {{ $i === 2 ? __('personas') : __('personas') }}</option>
+                                @endfor
+                            </select>
+                            @error('member_count')
+                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        <!-- Foto de la pareja -->
+                        <div>
+                            <label class="block text-sm font-medium text-purple-700 mb-2">
+                                {{ __('Foto de la pareja') }} <span class="text-neutral-500 text-xs">({{ __('Opcional') }})</span>
+                            </label>
+                            
+                            @if($photoPreview)
+                                <div class="mb-4 relative">
+                                    <img src="{{ $photoPreview }}" 
+                                         alt="{{ __('Vista previa de la foto') }}"
+                                         class="w-full h-64 object-cover rounded-lg border-2 border-purple-200">
+                                    <button type="button"
+                                            wire:click="removePhoto"
+                                            class="absolute top-2 right-2 bg-red-500 text-white rounded-full p-2 hover:bg-red-600 transition-colors"
+                                            title="{{ __('Quitar foto') }}">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                        </svg>
+                                    </button>
+                                </div>
+                            @else
+                                <div class="border-2 border-dashed border-purple-300 rounded-lg p-8 text-center hover:border-purple-400 transition-colors"
+                                     x-data="{ 
+                                         isDragging: false,
+                                         handleDrop(e) {
+                                             e.preventDefault();
+                                             this.isDragging = false;
+                                             if (e.dataTransfer.files.length > 0) {
+                                                 @this.upload('photo', e.dataTransfer.files[0]);
+                                             }
+                                         },
+                                         handleDragOver(e) {
+                                             e.preventDefault();
+                                             this.isDragging = true;
+                                         },
+                                         handleDragLeave() {
+                                             this.isDragging = false;
+                                         }
+                                     }"
+                                     @drop.prevent="handleDrop($event)"
+                                     @dragover.prevent="handleDragOver($event)"
+                                     @dragleave.prevent="handleDragLeave()"
+                                     :class="{ 'border-purple-500 bg-purple-50': isDragging }">
+                                    <input type="file"
+                                           wire:model="photo"
+                                           accept="image/jpeg,image/png,image/webp"
+                                           class="hidden"
+                                           id="photo-upload">
+                                    <label for="photo-upload" class="cursor-pointer">
+                                        <svg class="w-12 h-12 text-purple-400 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                        </svg>
+                                        <p class="text-purple-700 font-medium mb-1">{{ __('Haz clic para subir una foto') }}</p>
+                                        <p class="text-sm text-neutral-500">{{ __('o arrastra y suelta aquí') }}</p>
+                                        <p class="text-xs text-neutral-400 mt-2">{{ __('JPG, PNG o WebP (máx. 10MB)') }}</p>
+                                    </label>
+                                </div>
+                            @endif
+                            
+                            @error('photo')
+                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                            @enderror
+                            
+                            @if($photo)
+                                <div wire:loading wire:target="photo" class="mt-2 text-sm text-purple-600">
+                                    {{ __('Subiendo foto...') }}
+                                </div>
+                            @endif
+                        </div>
+
                         <div class="bg-gradient-to-r from-pink-50 via-purple-50 to-blue-50 border-2 border-pink-200 rounded-2xl p-6">
                             <div class="flex items-start gap-3">
                                 <span class="text-2xl">💡</span>

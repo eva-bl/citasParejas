@@ -12,6 +12,9 @@ class Couple extends Model
 
     protected $fillable = [
         'join_code',
+        'name',
+        'member_count',
+        'photo_path',
     ];
 
     /**

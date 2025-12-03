@@ -132,5 +132,40 @@ class ImageProcessingService
         
         return Storage::disk('public')->url($thumbnailPath);
     }
+
+    /**
+     * Process and store a couple photo
+     * 
+     * @param UploadedFile $file
+     * @param int $coupleId
+     * @return string Relative path from storage/app/public
+     */
+    public function processAndStoreCouplePhoto(UploadedFile $file, int $coupleId): string
+    {
+        // Generate unique filename
+        $uniqueId = Str::uuid()->toString();
+        
+        // Create directory structure
+        $basePath = "couples/{$coupleId}";
+        
+        // Ensure directories exist
+        Storage::disk('public')->makeDirectory($basePath);
+        Storage::disk('public')->makeDirectory("{$basePath}/thumbnails");
+        
+        // Read and process image
+        $image = $this->imageManager->read($file->getRealPath());
+        
+        // Resize if too large (maintain aspect ratio)
+        $image = $this->resizeIfNeeded($image);
+        
+        // Save original (as WebP for better compression)
+        $webpPath = "{$basePath}/photo_{$uniqueId}.webp";
+        $image->toWebp(85)->save(Storage::disk('public')->path($webpPath));
+        
+        // Generate thumbnails
+        $this->generateThumbnails($image, $basePath, "photo_{$uniqueId}");
+        
+        return $webpPath;
+    }
 }
 
